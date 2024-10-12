@@ -85,19 +85,39 @@ function bpm/locator() {
   fi
   
   case $mode in
+    ""|print)
+      locator/print_index
+      ;;
     update|-u)
       locator/update
       ;;
     index|-i) # Index package
-      if ! locator/index_package $path; then
-        echo -e "\e[31mCan't locate package file: $path\e[37m"
-      fi
+      locator/index_package $path
+      local status=$?
+      case $status in
+        $PKGSH_INVALID_PACKAGE)
+          echo -e "\e[31mCan't locate package.sh\e[37m"
+          ;;
+        $PKGSH_INVALID_NAME)
+          echo -e "\e[31mInvalid package name\e[37m"
+          echo -e "\e[33mNOTE: package name must be a non empty string, without spaces and special characters\e[37m"
+          ;;
+        $PKGSH_INVALID_VERSION_NUM)
+          echo -e "\e[31mInvalid package version: must be a valid number\e[37m"
+          ;;
+        *)
+          echo -e "\e[32mPackage index sucessfully updated\e[37m"
+          ;;
+      esac
+      ;;
+    remove|-r)
+      locator/remove $path
       ;;
     locate|-l)
       locator/locate_package $path
       ;;
     *)
-      echo -e "\e[31mInavlid mode: $mode\e[37m"
+      echo -e "\e[31mInvalid mode: $mode\e[37m"
       ;;
   esac
 }

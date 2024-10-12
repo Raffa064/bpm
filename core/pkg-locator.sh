@@ -1,4 +1,4 @@
-declare -A LOCATOR
+declare -gA LOCATOR
 
 function locator/init() {
   locator/load_state
@@ -20,7 +20,7 @@ function locator/add() {
   local pkg_name="$1"
   local pkg_path="$2"
 
-  LOCATOR[$pkg_name]="$pkg_path"
+  LOCATOR["$pkg_name"]="$pkg_path"
   
   locator/save_state
 }
@@ -60,4 +60,21 @@ function locator/index_package() {
 
 function locator/locate_package() {
   echo "${LOCATOR[$1]}"
+}
+
+function locator/print_index() {
+  local i
+  local keys
+  local values
+
+  read -a keys <<< "${!LOCATOR[@]}"
+  read -a values <<< "${LOCATOR[@]}"
+
+  local term_width=$(tput col)
+  local column_width=$((term_width / 2))
+
+  printf "\e[34m%-${column_width}s%-${column_width}s\e[37m" "Pacakge Name:" "Path:" 
+  for i in "${!keys[@]}"; do
+    printf "\e[33m%-${column_width}s%-${column_width}s\e[37m" "${keys[$i]}" "${values[$i]}" 
+  done
 }
