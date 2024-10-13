@@ -1,21 +1,23 @@
 function bpm/help() {
   if [ -z "$@" ]; then
-    echo "bpm help    - Show this dialog"
-    echo "bpm version - Display bpm version"
-    echo "bpm init    - Creates a new bpm project"
-    echo "bpm install - Install project dependencies"
-    echo "bpm delete  - Delete some package"
-    echo "bpm update  - Update package"
-    echo "bpm clean   - Delete all installed packages"
-    echo "bpm edit    - Open package.sh"
-    echo "bpm list    - List installed packages"
-    echo "bpm locator - Update locator index for package"
+    bpm/help bpm
   else
-    help_content="${help[$1]}"
+    help_content="${help_sections[$1]}"
     if [ -z "$help_content" ]; then
       echo -e "\e[31mInvalid help section: $1\e[37m"
     else
-      echo -e "$help_content" 
+      title=$(sed -n "1p" <<< "$help_content")
+      command=$(sed -n "3p" <<< "$help_content")
+      description=$(sed "1,3d" <<< "$help_content")
+
+      local highlighted="\n\e[35m# $title\n\n \e[32m$\e[36m $command\e[33m\n$description\e[37m\n"
+
+      highlighted=$(sed 's/"\([^"]*\)"/\\e[32m"\1"\\e[33m/g' <<< "$highlighted")   # "TEXT" 
+      highlighted=$(sed 's/>\([^<]*\)</\\e[36m\1\\e[33m/g' <<< "$highlighted") # >TEXT<
+      highlighted=$(sed 's/&lt;/</g' <<< "$highlighted") # <
+      highlighted=$(sed 's/&gt;/>/g' <<< "$highlighted") # >
+      
+      echo -e "$highlighted"
     fi
   fi
 }
@@ -25,7 +27,38 @@ function bpm/version() {
 }
 
 function bpm/init() {
-  echo "Can't init from here"
+  local path="$1"
+
+  arg/df_path path
+
+  local pkgsh_path=$(pkgsh/locate_pkg_file $path;)
+
+  if [ -z "$pkgsh_path" ]; then
+    echo "TODO: Init package dialog"
+  else
+    echo -e "\e[33mAlready initialized: $pkgsh_path\e[37m"
+  fi
+}
+
+function bpm/package() { 
+  local path="$1"
+
+  if [ -z "$path" ]; then
+    path=$(pwd)
+  fi
+
+  local pkgsh_path=$(pkgsh/locate_pkg_file $path)
+  
+  if [ -z "$pkgsh_path" ]; then
+    echo -e "\e[33mYou aren't inside a bpm package\e[37m"
+  else
+    if [ -z "$EDITOR" ]; then
+      echo -e "\e[33mYou don't have a configured editor.\e[37m"
+      echo -e "use \e[34m'export EDITOR=\"<your editor>\"'\e[37m to setup it"
+    else
+      $EDITOR $pkgsh_path
+    fi
+  fi
 }
 
 function bpm/list() {
@@ -51,9 +84,9 @@ function bpm/list() {
 function bpm/install() {
   local install_packages=""
   local path=$(pwd)
-  local package_sh_path="$(pkgsh/locate_pkg_root $path)/package.sh"
+  local pkgsh_path="$(pkgsh/locate_pkg_file $path)"
 
-  if [ -z "$package_sh_path" ]; then
+  if [ -z "$pkgsh_path" ]; then
     echo -e "\e[33mNOTE: You're installing outside an bpm project.\e[37m"
     read -a install_packages <<< "$@" # Convert argmunts into an indexed array
   else
@@ -61,7 +94,7 @@ function bpm/install() {
       echo -e "\e[33mInstaling project dependencies\e[37m"
   
       local dependencies
-      pkgsh/loadf dependencies $package_sh_path
+      pkgsh/loadf dependencies $pkgsh_path
 
       read -a install_packages <<< "$dependencies"
     fi
@@ -78,21 +111,18 @@ function bpm/install() {
 
 function bpm/locator() {
   local mode="$1"
-  local path="$2"
+  local mode_arg="$2"
 
-  if [ -z "$path" ]; then
-    path=$(pwd)
-  fi
-  
   case $mode in
-    ""|print)
+    print|-p)
       locator/print_index
       ;;
     update|-u)
       locator/update
       ;;
     index|-i) # Index package
-      locator/index_package $path
+      arg/df_path mode_arg
+      locator/index_package $mode_arg
       local status=$?
       case $status in
         $PKGSH_INVALID_PACKAGE)
@@ -111,21 +141,26 @@ function bpm/locator() {
       esac
       ;;
     remove|-r)
-      locator/remove $path
+      local curr_pkg_name
+      pkgsh/loadf curr_pkg_name "name" "$(pwd)"
+      arg/df mode_arg "$curr_pkg_name" 
+      locator/remove $mode_arg
       ;;
     locate|-l)
-      locator/locate_package $path
+      locator/locate_package $mode_arg
       ;;
     *)
+      bpm/help locator
       echo -e "\e[31mInvalid mode: $mode\e[37m"
       ;;
   esac
 }
 
 function bpm/uninstall() {
-  # TODO: remove executable
-  # remove from PATH
-  echo "Unimplemented feature"
+  echo -e "\e[32mState and installed packages will not be deleted."
+  echo -e "\e[33mUninstalling executable scripts....\e[37m"
+  rm $BPM_BIN_PATH
+  rm -rf "$BPM_DIR_PATH/core"
 }
 
 function bpm/leak-test() {

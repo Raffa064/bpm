@@ -1,4 +1,5 @@
 BPM_VERSION=1
+
 BPM_BIN_PATH="$PREFIX/bin/bpm"
 BPM_DIR_PATH="$HOME/.local/.bpm"
 BPM_DIR_STRUCTURE=(
@@ -6,5 +7,5 @@ BPM_DIR_STRUCTURE=(
   "state"
   "configs"
 )
-BPM_LOCATOR_PATH="$BPM_DIR_PATH/configs/locator.sh"
+BPM_LOCATOR_PATH="$BPM_DIR_PATH/state/locator.sh"
 

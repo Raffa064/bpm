@@ -1,4 +1,6 @@
-source_core
+declare -gA help_sections
+
+source_cli
 
 locator/init
 

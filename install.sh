@@ -8,7 +8,7 @@ function install_bpm() {
   echo "Installing bpm executable..."
   cat bpm.sh >> tmp
   local bpm_sh_content=$(cat bpm.sh)
-  bpm_sh_content=$(sed "s|source_core|source $BPM_DIR_PATH/core/source-cli.sh|" <<< "$bpm_sh_content")
+  bpm_sh_content=$(sed "s|source_cli|source $BPM_DIR_PATH/core/source-cli.sh|" <<< "$bpm_sh_content")
   
   touch tmp
   echo "$bpm_sh_content" > tmp

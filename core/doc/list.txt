@@ -1,0 +1,5 @@
+List packages
+
+bpm list
+
+List all installed packges from >bpm deps< directory.
