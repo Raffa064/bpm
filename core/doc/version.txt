@@ -1,5 +1,0 @@
-Version
-
-bpm version
-
-Just displays >bpm< version, that's just a integer number.

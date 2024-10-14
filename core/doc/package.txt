@@ -1,7 +1,0 @@
-Package shortcut
-
-bpm package
-
-It simply opens your >package.sh< file with your >default text editor<, regardless of your current location within the package directories.
-
->NOTE:< The default text editor must be defined into your environment variables as >$EDITOR<

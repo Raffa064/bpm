@@ -1,5 +1,0 @@
-Delete package
-
-bpm delete <package>
-
-It's not yet immplemented

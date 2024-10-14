@@ -1,6 +1,7 @@
-declare -gA help_sections
+source_core_scripts
 
-source_cli
+declare -gA help_sections
+sh/read_obj help_sections $BPM_DOCS_PATH
 
 locator/init
 
