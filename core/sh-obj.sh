@@ -1,5 +1,12 @@
 # TODO: fix read/write order
 
+function sh/sanitize_obj_entry() {
+  local -n entry_value="$1"
+
+  entry_value=$(sed 's/"/\\"/g' <<< "$entry_value")
+  entry_value=$(sed "s/\\$/\\\\$/g" <<< "$entry_value")
+}
+
 function sh/read_obj() {
   local -n output_obj="$1"
   local obj_name="$2"
@@ -18,9 +25,12 @@ function sh/read_obj() {
 
     for key in $(eval "echo \${!${obj_name}[@]}"); do
       local value=$(eval "echo \"\${$obj_name[$key]}\"")
+      sh/sanitize_obj_entry value 
       echo "output_obj[$key]=\"$value\";"
     done
   )
+
+  echo "$generated_code" > gc.sh
 
   eval "$generated_code"
 }

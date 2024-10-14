@@ -2,8 +2,8 @@ declare -gA LOCATOR
 
 function locator/init() {
   locator/load_state
-  locator/index_package $(pwd)
   locator/update
+  locator/index_package $(pwd)
 }
 
 function locator/save_state() {
@@ -52,7 +52,9 @@ function locator/index_package() {
   local status=$?
 
   if [ $status -eq 0 ]; then
-    locator/add "$name" "$path"
+    if [ -z "${LOCATOR[$name]}" ]; then
+      locator/add "$name" "$path"
+    fi
   else
     return $status
   fi

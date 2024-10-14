@@ -1,0 +1,8 @@
+Init package
+
+bpm init [path]
+
+
+Initializes a new >BPM package< in the specified path. If no path is provided, it defaults to your >current directory<.
+
+>Note:< This command only creates a >package.sh< file in the target directory. You'll then be prompted to provide all necessary information through an interactive dialog.

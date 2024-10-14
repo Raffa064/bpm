@@ -1,4 +1,21 @@
-source core/bpm.vars.sh
+source core/bpm-vars.sh
+source core/sh-obj.sh
+
+function compile_docs() {
+  local target_path="$1"
+
+  local -A help_sections
+  local path
+  for path in $(find "./docs" -regex ".*\.txt"); do
+    local section=$(basename "$path")
+    section="${section%.*}"
+    local sanitized_content=$(cat "$path")
+    sh/sanitize_obj_entry sanitized_content
+    help_sections["$section"]="$sanitized_content"
+  done
+
+  sh/write_obj help_sections "$target_path"
+}
 
 function install_bpm() {
   if [ -e "$BPM_BIN_PATH" ]; then
@@ -6,30 +23,29 @@ function install_bpm() {
   fi
 
   echo "Installing bpm executable..."
-  cat bpm.sh >> tmp
-  local bpm_sh_content=$(cat bpm.sh)
-  bpm_sh_content=$(sed "s|source_cli|source $BPM_DIR_PATH/core/source-cli.sh|" <<< "$bpm_sh_content")
-  
-  touch tmp
-  echo "$bpm_sh_content" > tmp
+  local content=$(cat bpm.sh)
+  content=$(sed "s@source_core_scripts@source $BPM_CORE_PATH@" <<< "$content")
+  echo "$content" > tmp 
 
   mv tmp $BPM_BIN_PATH
   chmod 777 $BPM_BIN_PATH
 
-  echo "Creating bpm directories"
+  echo "Creating bpm directories..."
   mkdir -p "$BPM_DIR_PATH"
   for dir in "${BPM_DIR_STRUCTURE[@]}"; do
     mkdir -p "$BPM_DIR_PATH/$dir"
   done
 
-  local core_dir="$BPM_DIR_PATH/core"
-  if [ -e "$core_dir" ]; then
-    echo "Overwriting core scripts"
-    rm -rf "$core_dir"
-  fi
+  echo "Compiling core scrips..."
+  local path
+  for path in $(find "./core" -regex ".*\.sh"); do
+    cat $path >> tmp
+  done
+  mv tmp "$BPM_CORE_PATH"
 
-  echo "Copying core scripts..."
-  cp -r ./core $core_dir
+
+  echo "Compiling docs..."
+  compile_docs $BPM_DOCS_PATH
 
   echo "Installation successfully finished!"
 }
