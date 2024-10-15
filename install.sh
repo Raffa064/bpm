@@ -37,8 +37,11 @@ function install_bpm() {
   done
 
   echo "Compiling core scrips..."
+  rm tmp >/dev/null
+  echo -e "# Compiled by $(whoami) at $(date)\n" > tmp
   local path
   for path in $(find "./core" -regex ".*\.sh"); do
+    echo "# $path" >> tmp
     cat $path >> tmp
   done
   mv tmp "$BPM_CORE_PATH"
