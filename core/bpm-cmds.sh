@@ -67,8 +67,8 @@ function bpm/list() {
   local -A bpd
     
   printf "\e[34m%-${column_width}s%-${column_width}s\n\e[33m" "Package Name/Version:" "Description:"
-  for pkg in $(ls "$BPM_DIR_PATH/deps"); do
-    pkgsh/load bpd "$BPM_DIR_PATH/deps/$pkg/package.sh"
+  for pkg in $(ls "$BPM_DEPS_PATH"); do
+    pkgsh/load bpd "$BPM_DEPS_PATH/$pkg/package.sh"
     
     pkg_name="${bpd[name]}"
     pkg_version="v${bpd[version]}"
@@ -161,6 +161,11 @@ function bpm/uninstall() {
   echo -e "\e[33mUninstalling executable scripts....\e[37m"
   rm $BPM_BIN_PATH
   rm -rf "$BPM_DIR_PATH/core"
+
+  if [ "$1" == "-d" ]; then
+    echo -e "\e[33mDeleting dependencies...\e[37m"
+    rm -rf "$BPM_DEPS_PATH"
+  fi
 }
 
 function bpm/leak-test() {
