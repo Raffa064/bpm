@@ -30,8 +30,6 @@ function sh/read_obj() {
     done
   )
 
-  echo "$generated_code" > gc.sh
-
   eval "$generated_code"
 }
 
