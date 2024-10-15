@@ -1,6 +1,6 @@
-function bpm/help() {
+function cmd/help() {
   if [ -z "$@" ]; then
-    bpm/help bpm
+    cmd/help bpm
   else
     help_content="${help_sections[$1]}"
     if [ -z "$help_content" ]; then
@@ -22,25 +22,65 @@ function bpm/help() {
   fi
 }
 
-function bpm/version() {
+function cmd/version() {
   echo $BPM_VERSION
 }
 
-function bpm/init() {
+function cmd/init() {
   local path="$1"
 
   arg/df_path path
 
-  local pkgsh_path=$(pkgsh/locate_pkg_file $path;)
+  local pkgsh_path=$(pkgsh/locate_pkg_file $path)
 
   if [ -z "$pkgsh_path" ]; then
-    echo "TODO: Init package dialog"
+    local pkg_name pkg_version pkg_main pkg_deps
+
+    echo -e "\e[33mInitializing a new package\e[37m"
+    
+    while :; do
+      arg/q_input pkg_name "Name" "$pkg_name"
+      arg/q_input pkg_version "Version" "${pkg_version-1}"
+      arg/q_input pkg_main "Main script" "${pkg_script-main.sh}"
+      arg/q_input pkg_dependencies "Dependencies" "$pkg_dependencies"
+
+      local -A pkg=(
+        [name]="$pkg_name"
+        [version]="$pkg_version"
+        [main]="$pkg_main"
+        [dependencies]="$pkg_dependencies"
+      )
+
+      if locator/is_indexed "$pkg_name"; then
+        echo -e "\e[31mInvalid name: Already in use\e[37m"
+        pkg_name=""
+      else
+        pkgsh/create pkg "$path"
+
+        local status=$?
+
+        case $status in
+          $PKGSH_INVALID_NAME)
+            echo -e "\e[31mInvalid name: Can't use spaces or special characters\e[37m"
+            pkg_name=""
+            ;;
+          $PKGSH_INVALID_VERSION_NUM)
+            echo -e "\e[31mInvalid version: It must be a integer number\e[37m"
+            pkg_version=""
+            ;;
+          0)
+            echo -e "\n\e[32mPackage successfully initialized\e[37m"
+            echo -e "Use \e[32mbpm package\e[37m to edit package.sh"
+            break;
+        esac
+      fi
+    done
   else
     echo -e "\e[33mAlready initialized: $pkgsh_path\e[37m"
   fi
 }
 
-function bpm/package() { 
+function cmd/package() { 
   local path="$1"
 
   if [ -z "$path" ]; then
@@ -61,18 +101,19 @@ function bpm/package() {
   fi
 }
 
-function bpm/list() {
+function cmd/list() {
   local term_width=$(tput cols)
   local column_width=$((term_width / 2))
-  local -A bpd
+  local -A pkg
     
   printf "\e[34m%-${column_width}s%-${column_width}s\n\e[33m" "Package Name/Version:" "Description:"
-  for pkg in $(ls "$BPM_DEPS_PATH"); do
-    pkgsh/load bpd "$BPM_DEPS_PATH/$pkg/package.sh"
+  local pkg_path
+  for pkg_path in $(ls "$BPM_DEPS_PATH"); do
+    pkgsh/load pkg "$BPM_DEPS_PATH/$pkg_path/package.sh"
     
-    pkg_name="${bpd[name]}"
-    pkg_version="v${bpd[version]}"
-    pkg_description="${bpd[description]}"
+    pkg_name="${pkg[name]}"
+    pkg_version="v${pkg[version]}"
+    pkg_description="${pkg[description]}"
     
     name_length=${#pkg_name}
     printf "%-${name_length}s \e[35m%-$((column_width - name_length - 1))s\e[33m%-${column_width}s\n" "$pkg_name" "$pkg_version" "$pkg_description"
@@ -81,7 +122,7 @@ function bpm/list() {
   echo -en "\e[37m"
 }
 
-function bpm/install() {
+function cmd/install() {
   local install_packages=""
   local path=$(pwd)
   local pkgsh_path="$(pkgsh/locate_pkg_file $path)"
@@ -100,8 +141,9 @@ function bpm/install() {
     fi
   fi
 
-  for pkg in "${install_packages[@]}"; do
-    echo "pkg: $pkg"
+  local pkg_path
+  for pkg_path in "${install_packages[@]}"; do
+    echo "pkg: $pkg_path"
     echo "TODO: locate or install packages here"
     #if ! get_package $pkg; then
     #  echo -e "\e[31mPackage not found: $pkg\e[37m"
@@ -109,7 +151,7 @@ function bpm/install() {
   done
 }
 
-function bpm/locator() {
+function cmd/locator() {
   local mode="$1"
   local mode_arg="$2"
 
@@ -150,13 +192,13 @@ function bpm/locator() {
       locator/locate_package $mode_arg
       ;;
     *)
-      bpm/help locator
+      cmd/help locator
       echo -e "\e[31mInvalid mode: $mode\e[37m"
       ;;
   esac
 }
 
-function bpm/uninstall() {
+function cmd/uninstall() {
   echo -e "\e[32mState and installed packages will not be deleted."
   echo -e "\e[33mUninstalling executable scripts....\e[37m"
   rm $BPM_BIN_PATH
@@ -168,7 +210,7 @@ function bpm/uninstall() {
   fi
 }
 
-function bpm/leak-test() {
+function cmd/leak-test() {
   local env="$(set)"
   cat <<< "$env"
 }

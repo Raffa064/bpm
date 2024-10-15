@@ -24,3 +24,29 @@ function arg/df_path() {
 
   arg/df arg_path "$val" "$(pwd)"
 }
+
+function arg/q_input() {
+  local -n output="$1"
+
+  if [ "$2" == "-s" ]; then # Skip if default exists
+    shift
+    if [ ! -z "$df" ]; then
+      return
+    fi
+  fi
+
+  local question="$2"
+  local df="$3"
+  
+  local df_str
+  if [ ! -z "$df" ]; then
+    df_str=" (df.: $df)"
+  fi
+
+  echo -ne "\e[34m$question\e[33m$df_str\e[34m: \e[37m"
+  read output
+
+  if [ -z "$output" ]; then
+    output="$df"
+  fi
+}

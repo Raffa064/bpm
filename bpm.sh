@@ -5,7 +5,7 @@ source $BPM_DOCS_PATH
 
 locator/init
 
-bpm_command="bpm/$1"
+bpm_command="cmd/$1"
 
 if declare -f "$bpm_command" >/dev/null; then
   shift

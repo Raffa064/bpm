@@ -64,6 +64,13 @@ function locator/locate_package() {
   echo "${LOCATOR[$1]}"
 }
 
+function locator/is_indexed() {
+  local pkg_name="$1"
+  if [ -z "${LOCATOR["$pkg_name"]}" ]; then
+    return 1
+  fi
+}
+
 function locator/print_index() {
   local i
   local keys
