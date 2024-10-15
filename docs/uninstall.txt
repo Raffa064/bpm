@@ -1,0 +1,5 @@
+BPM unintall
+
+bpm uninstall [-d]
+
+It will uninstall >bpm executable<. If >-d< flag is specified, it will also delete >deps dir< (which contains all packages that have been installed from external sources)

@@ -3,4 +3,4 @@ BPM Help
 bpm help [command]
 
 When its called without arguments, it shows a list with all bpm commamds and it's short descriptions.
-Try "bpm help" to list all commands
+Try "bpm help" to list all commands.

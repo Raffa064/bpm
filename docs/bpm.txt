@@ -3,10 +3,15 @@ BPM (Bash Package Manager)
 bpm <command> (arguments...)
 
 Commands:
->help<    - Show this dialog
->version< - Display bpm version
->init<    - Creates a new bpm project
->package< - Open package.sh with your default text editor from >$EDITOR<
->install< - Install project dependencies
->list<    - List installed packages
->locator< - Update locator index for package
+>help<      - Show this dialog
+>version<   - Display bpm version
+>init<      - Creates a new bpm project
+>package<   - Open package.sh with your default text editor from >$EDITOR<
+>list<      - List installed packages
+>install<   - Install project dependencies
+>update<    - Update remote packages
+>remove<    - Delete some package
+>locator<   - Update locator index for package
+>uninstall< - Uninstalls bpm
+
+>NOTE:< You can use "bpm help <command>" to learn more about bpm commands.

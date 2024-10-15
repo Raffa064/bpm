@@ -1,5 +1,6 @@
 Delete package
 
-bpm delete <package>
+bpm delete [-f] (<package>...)
 
-It's not yet immplemented
+Delete packages which has been installed from "bpm install" command.
+>NOTE:< Local packages (outside deps dir) could only be delete with the >force flag (-f)<.
