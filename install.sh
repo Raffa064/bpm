@@ -1,3 +1,5 @@
+#!/bin/bash
+
 source core/bpm-vars.sh
 source core/sh-obj.sh
 
@@ -28,7 +30,7 @@ function install_bpm() {
   echo "$content" > tmp 
 
   mv tmp $BPM_BIN_PATH
-  chmod 777 $BPM_BIN_PATH
+  chmod 700 $BPM_BIN_PATH # Only current user can access it
 
   echo "Creating bpm directories..."
   mkdir -p "$BPM_DIR_PATH"
@@ -37,7 +39,7 @@ function install_bpm() {
   done
 
   echo "Compiling core scrips..."
-  rm tmp >/dev/null
+  rm tmp >/dev/null 2>&1
   echo -e "# Compiled by $(whoami) at $(date)\n" > tmp
   local path
   for path in $(find "./core" -regex ".*\.sh"); do
