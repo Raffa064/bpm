@@ -17,20 +17,35 @@ function locator/load_state() {
 }
 
 function locator/add() {
+  local save_flag=0
+  if [ "$1" == "-n" ]; then
+    save_flag=1
+    shift
+  fi
+  
   local pkg_name="$1"
   local pkg_path="$2"
-
   LOCATOR["$pkg_name"]="$pkg_path"
   
-  locator/save_state
+  if [ $save_flag -e 0 ]; then
+    locator/save_state
+  fi
+
 }
 
 function locator/remove() {
+  local save_flag=0
+  if [ "$1" == "-n" ]; then
+    save_flag=1
+    shift
+  fi
+  
   local pkg_name="$1"
-
   unset LOCATOR[$pkg_name]
   
-  locator/save_state
+  if [ $save_flag -e 0 ]; then
+    locator/save_state
+  fi
 }
 
 function locator/update() {
@@ -38,10 +53,12 @@ function locator/update() {
 
   for pkg_name in "${!LOCATOR[@]}"; do
     local pkg_path="${LOCATOR[$pkg_name]}"
-    if [ ! -e "$pkg_path/package.sh" ]; then
-      locator/remove $pkg_name
+    if [ ! -e "$pkg_path/package.sh" ]; then #TODO: check if name is the same in package.sh to prevent duplified entries
+      locator/remove -n $pkg_name
     fi
   done
+
+  locator/save_state
 }
 
 function locator/index_package() {
@@ -52,9 +69,9 @@ function locator/index_package() {
   local status=$?
 
   if [ $status -eq 0 ]; then
-    if [ -z "${LOCATOR[$name]}" ]; then
+    #if [ -z "${LOCATOR[$name]}" ]; then
       locator/add "$name" "$path"
-    fi
+    #fi
   else
     return $status
   fi
