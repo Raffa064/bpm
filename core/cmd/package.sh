@@ -85,7 +85,7 @@ function cmd/list() {
     
     pkg_name="${pkg[name]}"
     pkg_version="v${pkg[version]}"
-    pkg_description="${pkg[description]}"
+    pkg_description=$(arg/cutstr "${pkg[description]}" $column_width -e)
     
     name_length=${#pkg_name}
     printf "%-${name_length}s \e[35m%-$((column_width - name_length - 1))s\e[33m%-${column_width}s\n" "$pkg_name" "$pkg_version" "$pkg_description"

@@ -82,8 +82,8 @@ function locator/print_index() {
   local term_width=$(tput col)
   local column_width=$((term_width / 2))
 
-  printf "\e[34m%-${column_width}s%-${column_width}s\e[37m" "Pacakge Name:" "Path:" 
+  printf "\e[34m%-${column_width}s%-${column_width}s\e[37m" "Package Name:" "Path:" 
   for i in "${!keys[@]}"; do
-    printf "\e[33m%-${column_width}s%-${column_width}s\e[37m" "${keys[$i]}" "${values[$i]}" 
+    printf "\e[33m%-${column_width}s%-${column_width}s\e[37m" "${keys[$i]}" $(arg/cutstr "${values[$i]}" $column_width) 
   done
 }

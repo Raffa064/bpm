@@ -50,3 +50,19 @@ function arg/q_input() {
     output="$df"
   fi
 }
+
+function arg/cutstr() {
+  local str="$1"
+  local size="$2"
+
+  if [ ${#str} -gt $size ]; then
+    local s=$((size - 3))
+    if [ "$3" == "-e" ]; then 
+      echo "${str:0:$s}..."
+    else
+      echo "...${str: -$s}"
+    fi
+  else
+    echo "$str"
+  fi
+}

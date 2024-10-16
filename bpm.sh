@@ -2,9 +2,6 @@
 
 source_core_scripts
 
-declare -gA help_sections
-source $BPM_DOCS_PATH
-
 locator/init
 
 bpm_command="cmd/$1"
