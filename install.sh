@@ -2,6 +2,59 @@
 
 source core/bpm-vars.sh
 source core/sh-obj.sh
+source core/arg.sh
+
+INSTALL_COMMAND="apt install"
+
+function check_for_install_command() {
+  while :; do
+    local pkgman
+    read -a pkgman <<< "$INSTALL_COMMAND"
+    pkgman="${pkgman[0]}"
+
+    if ! command -v "$pkgman" >/dev/null; then
+      clear
+      echo -e "\e[33m* Can't locate $pkgman.\e[37m"
+      echo -e "\nIf you are using other package manager, enter it's \e[32minstall command\e[37m bellow. \e[35m(Ex: apt install, pkg install):\e[37m"
+      arg/q_input INSTALL_COMMAND "Install command" "$INSTALL_COMMAND"
+    else
+      break
+    fi
+  done
+}
+
+function download_dependencies() {
+  check_for_install_command
+
+  echo "Looking for dependencies..."
+  local dep
+  for dep in "${BPM_DEPENDENCIES[@]}"; do
+    if command -v $dep >/dev/null; then
+      echo -e "  * \e[32m$dep\e[37m is installed"
+    else
+      echo -e "  * \e[31m$dep\e[37m is not installed\n  \e[33mInstalling...\e[37m"
+      eval "yes | $INSTALL_COMMAND $dep" >/dev/null 2>&1
+    fi
+  done
+}
+
+function make_dirs() {
+  echo "Creating bpm directories..."
+  mkdir -p "$BPM_DIR_PATH"
+  for dir in "${BPM_MKD[@]}"; do
+    mkdir -p "$dir"
+  done
+}
+
+function generate_executable() {
+  echo "Installing bpm executable..."
+  local content=$(cat bpm.sh)
+  content=$(sed "s@source_core_scripts@source $BPM_CORE_PATH@" <<< "$content")
+  echo "$content" > bpm
+
+  chmod 700 bpm        # Only current user can access it
+  mv bpm $BPM_BIN_PATH # Move to ~/local/bin
+} 
 
 function compile_docs() {
   local target_path="$1"
@@ -35,7 +88,7 @@ function compile_core_scripts() {
 function compile_resources() {
   mkdir -p tmp
 
-  echo "Compiling core scrips..."
+  echo "Compiling core scripts..."
   compile_core_scripts tmp/core.sh
 
   echo "Compiling docs..."
@@ -54,39 +107,24 @@ function compile_resources() {
 }
 
 function install_bpm() {
-  if [ -e "$BPM_BIN_PATH" ]; then
-    rm $BPM_BIN_PATH
-  fi
-
-  echo "Installing bpm executable..."
-  local content=$(cat bpm.sh)
-  content=$(sed "s@source_core_scripts@source $BPM_CORE_PATH@" <<< "$content")
-  echo "$content" > tmp 
-
-  mv tmp $BPM_BIN_PATH
-  chmod 700 $BPM_BIN_PATH # Only current user can access it
-
-  echo "Creating bpm directories..."
-  mkdir -p "$BPM_DIR_PATH"
-  for dir in "${BPM_DIR_STRUCTURE[@]}"; do
-    mkdir -p "$BPM_DIR_PATH/$dir"
-  done
-
+  download_dependencies
+  make_dirs  
+  generate_executable
   compile_resources
-  
-  echo "Installation successfully finished!"
+
+  echo -e "\n\e[32mInstallation successfully finished!\e[37m"
 }
 
 function main() {
   clear
-  echo "BPM INSTALLER - 2024"
+  echo -e "\e[33mBPM INSTALLER - 2024\e[37m\n"
 
   if [ -e "$BPM_BIN_PATH" ]; then
     current_version=$(bpm version)
 
     if [ $BPM_VERSION == "$current_version" ]; then
-      echo "BPM is already installed."
-      echo "Want to reinstall it anyway? (Y/n)"
+      echo -e "\e[33m[!] BPM is already installed."
+      echo -e "\e[34m[?] Want to reinstall it anyway? (Y/n)\e[37m"
 
       while :; do
         read op

@@ -32,14 +32,15 @@ function cmd/leak-test() {
 }
 
 function cmd/uninstall() {
-  echo -e "\e[32mState and installed packages will not be deleted."
   echo -e "\e[33mUninstalling executable scripts....\e[37m"
-  rm $BPM_BIN_PATH
-  rm -rf "$BPM_DIR_PATH/core"
+  rm "$BPM_BIN_PATH/bpm"
+  rm "$BPM_CORE_PATH"
 
   if [ "$1" == "-d" ]; then
-    echo -e "\e[33mDeleting dependencies...\e[37m"
-    rm -rf "$BPM_DEPS_PATH"
+    echo -e "\e[33mFully deleting all state and installed packages\e[37m"
+    rm -rf "$BPM_DIR_PATH"
+  else
+    echo -e "\e[32mState and installed packages will not be deleted."
   fi
 }
 
