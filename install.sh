@@ -106,11 +106,21 @@ function compile_resources() {
   rm -rf tmp
 }
 
+function ensure_env_local() {
+  if [[ ! "$PATH" =~ "$BPM_BIN_PATH" ]]; then
+    echo -e "\e[34mThe '~/.local/bin' dir is not included into your PATH\e[37m"
+    echo -e "  * Adding to \e[32m~/.bashrc\e[37m..."
+    echo "export PATH=\"\$PATH:$BPM_BIN_PATH\"" >> "$HOME/.bashrc"
+    echo -e "\e[33mNOTE: You will need to reload your bash session to use bpm.\e[37m"
+  fi
+}
+
 function install_bpm() {
   download_dependencies
   make_dirs  
   generate_executable
   compile_resources
+  ensure_env_local
 
   echo -e "\n\e[32mInstallation successfully finished!\e[37m"
 }
