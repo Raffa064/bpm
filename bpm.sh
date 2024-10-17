@@ -2,9 +2,11 @@
 
 source_core_scripts
 
-locator/init
-
 bpm_command="cmd/$1"
+
+if [ ! "$bpm_command" == "cmd/fix" ]; then
+  locator/init
+fi
 
 if declare -f "$bpm_command" >/dev/null; then
   shift

@@ -17,6 +17,10 @@ function sh/read_obj() {
     path="$2"
   fi
 
+  if [ ! -e "$path" ]; then
+    return 1
+  fi
+
   local generated_code=$(
     create_array="declare -A $obj_name"
     $create_array
@@ -41,6 +45,10 @@ function sh/write_obj() {
   if [ -z "$path" ]; then
     obj_name="$1"
     path="$2"
+  fi
+
+  if [ ! -e "$path" ]; then
+    touch "$path"
   fi
 
   echo -n "" > "$path"

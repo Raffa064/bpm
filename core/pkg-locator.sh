@@ -11,9 +11,7 @@ function locator/save_state() {
 }
 
 function locator/load_state() {
-  if [ -e "$BPM_LOCATOR_PATH" ]; then
-    sh/read_obj LOCATOR $BPM_LOCATOR_PATH
-  fi
+  sh/read_obj LOCATOR $BPM_LOCATOR_PATH
 }
 
 function locator/add() {

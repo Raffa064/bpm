@@ -12,6 +12,7 @@ Commands:
 >update<    - Update remote packages
 >remove<    - Delete some package
 >locator<   - Update locator index for package
->uninstall< - Uninstalls bpm
+>fix<       - Fix broken bpm files and directories
+>uninstall< - Uninstall bpm
 
 >NOTE:< You can use "bpm help <command>" to learn more about bpm commands.

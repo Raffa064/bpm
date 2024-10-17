@@ -1,0 +1,5 @@
+Fix BPM files
+
+bpm fix
+
+This command could be used to rebuild bpm dirs, and configuration files.

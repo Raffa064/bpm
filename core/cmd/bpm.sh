@@ -31,6 +31,17 @@ function cmd/leak-test() {
   cat <<< "$env"
 }
 
+function cmd/fix() {
+  for dir in "${BPM_MKD[@]}"; do
+    mkdir -p "$dir"
+  done
+
+  if [ ! -e "$BPM_LOCATOR_PATH" ]; then
+    touch $BPM_LOCATOR_PATH
+    locator/save_state
+  fi
+}
+
 function cmd/uninstall() {
   echo -e "\e[33mUninstalling executable scripts....\e[37m"
   rm "$BPM_BIN_PATH/bpm"
