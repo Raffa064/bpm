@@ -41,7 +41,7 @@ function locator/remove() {
   local pkg_name="$1"
   unset LOCATOR[$pkg_name]
   
-  if [ $save_flag -e 0 ]; then
+  if [ $save_flag -eq 0 ]; then
     locator/save_state
   fi
 }

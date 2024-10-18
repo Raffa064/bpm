@@ -1,0 +1,3 @@
+core/fs.sh
+core/sh-obj.sh
+core/pkgsh.sh

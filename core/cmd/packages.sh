@@ -75,24 +75,7 @@ function cmd/package() {
 }
 
 function cmd/list() {
-  local term_width=$(tput cols)
-  local column_width=$((term_width / 2))
-  local -A pkg
-    
-  printf "\e[34m%-${column_width}s%-${column_width}s\n\e[33m" "Package Name/Version:" "Description:"
-  local pkg_path
-  for pkg_path in $(ls "$BPM_DEPS_PATH"); do
-    pkgsh/load pkg "$BPM_DEPS_PATH/$pkg_path/package.sh"
-    
-    pkg_name="${pkg[name]}"
-    pkg_version="v${pkg[version]}"
-    pkg_description=$(arg/cutstr "${pkg[description]}" $column_width -e)
-    
-    name_length=${#pkg_name}
-    printf "%-${name_length}s \e[35m%-$((column_width - name_length - 1))s\e[33m%-${column_width}s\n" "$pkg_name" "$pkg_version" "$pkg_description"
-  done
-
-  echo -en "\e[37m"
+  cmd/locator -p
 }
 
 function cmd/install() {

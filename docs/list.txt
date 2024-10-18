@@ -2,4 +2,4 @@ List packages
 
 bpm list
 
-List all installed packges from >bpm deps< directory.
+List all indexed packages. Shortcut for "bpm locator print".
