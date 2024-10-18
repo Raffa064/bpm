@@ -16,13 +16,24 @@ if [ "$opt" == "-j" ]; then
   watch_path="$script"
 fi
 
+function notibell() {
+  local delays
+
+  read -a delays <<< "$@ 0"
+
+  for delay in "${delays[@]}"; do
+    echo -en "\a"  
+    sleep $delay
+  done
+}
+
 reload_count=1
 while inotifywait -q -r -e close_write,moved_to,create $watch_path; do
+  notibell .24
   clear
-  echo -e "\a"
   yes | bash "$script"
   echo -e "\e[31m[ Watched $reload_count time(s) ]\e[37m"
   reload_count=$((reload_count + 1))
-  echo -e "\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a"
+  notibell 0.15 0.1 0.1
   sleep 1
 done
