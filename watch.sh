@@ -19,7 +19,10 @@ fi
 reload_count=1
 while inotifywait -q -r -e close_write,moved_to,create $watch_path; do
   clear
+  echo -e "\a"
   yes | bash "$script"
-  echo -e "\e[31m[ Watched $reload_count time(s) ]\e[37m\a\a"
+  echo -e "\e[31m[ Watched $reload_count time(s) ]\e[37m"
   reload_count=$((reload_count + 1))
+  echo -e "\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a\a"
+  sleep 1
 done
