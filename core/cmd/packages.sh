@@ -41,6 +41,7 @@ function cmd/init() {
             pkg_version=""
             ;;
           0)
+            locator/index_package $path
             echo -e "\n\e[32mPackage successfully initialized\e[37m"
             echo -e "Use \e[32mbpm package\e[37m to edit package.sh"
             break;

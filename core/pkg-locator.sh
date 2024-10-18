@@ -67,9 +67,7 @@ function locator/index_package() {
   local status=$?
 
   if [ $status -eq 0 ]; then
-    #if [ -z "${LOCATOR[$name]}" ]; then
-      locator/add "$name" "$path"
-    #fi
+    locator/add "$name" "$path"
   else
     return $status
   fi

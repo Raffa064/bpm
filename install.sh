@@ -73,28 +73,31 @@ function compile_docs() {
   sh/write_obj help_sections "$target_path"
 }
 
-function compile_core_scripts() {
-  local target_path="$1"
+function compile_scripts() {
+  local path="$1"
+  local target_path="$2"
+
   rm "$target_path" >/dev/null 2>&1
 
   echo -e "# Compiled by $(whoami) at $(date)\n" > "$target_path"
-  local path
-  for path in $(find "./core" -regex ".*\.sh"); do
-    echo "# $path" >> "$target_path"
-    cat $path >> "$target_path"
+  local file_path
+  for file_path in $(find "$path" -regex ".*\.sh"); do
+    echo "# $file_path" >> "$target_path"
+    cat $file_path >> "$target_path"
   done
 }
 
-function compile_resources() {
+function compile_coresh() {
+  echo "Compiling core.sh"
   mkdir -p tmp
 
-  echo "Compiling core scripts..."
-  compile_core_scripts tmp/core.sh
+  echo "  * Compiling core scripts..."
+  compile_scripts ./core tmp/core.sh
 
-  echo "Compiling docs..."
+  echo "  * Compiling docs..."
   compile_docs tmp/docs.sh
 
-  echo "Merging compiled sources..."
+  echo "  * Merging compiled sources..."
 
   local merged="./tmp/merged"
   cat "tmp/core.sh" > "$merged"
@@ -102,6 +105,22 @@ function compile_resources() {
   cat "tmp/docs.sh" >> "$merged"
 
   mv "$merged" $BPM_CORE_PATH
+
+  rm -rf tmp
+}
+
+function compile_runtime() {
+  echo "Generating runtime script..."
+  cp -r ./runtime tmp
+
+  echo "  * Copying dependencies..."
+  for dep in $(cat ./runtime/deps.txt); do 
+    cp "$dep" "tmp/$(basename $dep)"
+  done
+
+  echo "  * Compiling runtime..."
+  compile_scripts tmp $BPM_RUNNER_PATH
+  echo "run/main \$@" >> $BPM_RUNNER_PATH
 
   rm -rf tmp
 }
@@ -119,7 +138,8 @@ function install_bpm() {
   download_dependencies
   make_dirs  
   generate_executable
-  compile_resources
+  compile_coresh
+  compile_runtime
   ensure_env_local
 
   echo -e "\n\e[32mInstallation successfully finished!\e[37m"

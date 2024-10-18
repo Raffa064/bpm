@@ -20,5 +20,5 @@ BPM_MKD=(
 # Scripts
 BPM_LOCATOR_PATH="$BPM_STATE_PATH/locator.sh"
 BPM_CORE_PATH="$BPM_DIR_PATH/core.sh"
-
+BPM_RUNNER_PATH="$BPM_DIR_PATH/runner.sh"
 
