@@ -25,7 +25,7 @@ function locator/add() {
   local pkg_path="$2"
   LOCATOR["$pkg_name"]="$pkg_path"
   
-  if [ $save_flag -e 0 ]; then
+  if [ $save_flag -eq 0 ]; then
     locator/save_state
   fi
 
@@ -94,7 +94,7 @@ function locator/print_index() {
   read -a keys <<< "${!LOCATOR[@]}"
   read -a values <<< "${LOCATOR[@]}"
 
-  local term_width=$(tput col)
+  local term_width=$(tput cols)
   local column_width=$((term_width / 2))
 
   printf "\e[34m%-${column_width}s%-${column_width}s\e[37m" "Package Name:" "Path:" 
