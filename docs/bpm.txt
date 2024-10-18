@@ -11,6 +11,7 @@ Commands:
 >install<   - Install project dependencies
 >update<    - Update remote packages
 >remove<    - Delete some package
+>run<       - Run executable packages
 >locator<   - Update locator index for package
 >fix<       - Fix broken bpm files and directories
 >uninstall< - Uninstall bpm

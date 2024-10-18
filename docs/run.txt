@@ -1,0 +1,16 @@
+Run bpm packages
+
+bpm run [package name]
+
+To run a bpm project, it's >package.sh< might specify the main script as follows:
+
+  >pkg[main]='com.pkg.name.script' # -> src/com/pkg/name/script.sh< 
+
+>NOTE:< The main script must have a main function namespaced with package's name:
+
+  Examples:
+  -  yourPkgName/main
+  -  bpm/main
+  -  project/main
+
+The >package name< param allows to run any package from anywhere, but if it's not specified, it will try to run the current dir as a package dir. If you aren't inside a package dir, it will display an error message.
