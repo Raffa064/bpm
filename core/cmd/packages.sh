@@ -48,6 +48,8 @@ function cmd/init() {
               main_path="$path/src/$main_path.sh"
               mkdir -p $(dirname $main_path)
               echo -e "function $pkg_name/main() {\n  echo \"Hello world\"\n}" > "$main_path"
+            else
+              mkdir -p "$path/src"
             fi
 
             git init $path >/dev/null 2>&1
