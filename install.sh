@@ -147,7 +147,7 @@ function install_bpm() {
 
 function main() {
   clear
-  echo -e "\e[33mBPM INSTALLER - 2024\e[37m\n"
+  bash banner.sh
 
   if [ -e "$BPM_BIN_PATH" ]; then
     current_version=$(bpm version)
