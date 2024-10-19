@@ -46,3 +46,25 @@ function cmd/locator() {
       ;;
   esac
 }
+
+function cmd/deps() {
+  local path="$1"
+  arg/df_path path
+
+
+  local pkgsh_path=$(pkgsh/locate_pkg_file $path)
+
+  if [ -z "$pkgsh_path" ]; then
+    echo -e "\e[31mCan't ocate package file: $path\e[37m"
+  else
+    local pkg_name
+    pkgsh/loadf pkg_name "name" "$pkgsh_path"
+    
+    local output=$(locator/dependencies "$pkg_name")
+    read -a output <<< "$output"
+
+    for dep in "${output[@]}"; do
+      echo "$dep"
+    done
+  fi
+}

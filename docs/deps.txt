@@ -1,0 +1,5 @@
+List dependencies
+
+bpm deps [path]
+
+Lists all package dependencies from any package.

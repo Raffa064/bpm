@@ -115,3 +115,23 @@ function locator/print_index() {
     printf "\e[33m%-${column_width}s%-${column_width}s\e[37m\n" "${keys[$i]}" $(arg/cutstr "${values[$i]}" $column_width) 
   done
 }
+
+function locator/dependencies() {
+  local pkg_name="$1"
+  local seen="$2"
+  
+  local pkg_path="${LOCATOR["$pkg_name"]}"
+
+  local pkg_deps
+  pkgsh/loadf pkg_deps "dependencies" "$pkg_path/package.sh"
+  read -a pkg_deps <<< "$pkg_deps"
+
+  local output=""
+  for dep in "${pkg_deps[@]}"; do
+    if [[ ! "$seen" =~ "$dep" ]]; then
+      output+="$dep $(locator/dependencies "$dep" "$output")"
+    fi
+  done
+
+  echo $output
+}
