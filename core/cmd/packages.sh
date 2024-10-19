@@ -13,7 +13,7 @@ function cmd/init() {
     while :; do
       arg/q_input pkg_name "Name" "$pkg_name"
       arg/q_input pkg_version "Version" "${pkg_version-1}"
-      arg/q_input pkg_main "Main script" "${pkg_script-main.sh}"
+      arg/q_input pkg_main "Main script" "${pkg_main}"
       arg/q_input pkg_dependencies "Dependencies" "$pkg_dependencies"
 
       local -A pkg=(
@@ -42,6 +42,16 @@ function cmd/init() {
             ;;
           0)
             locator/index_package $path
+
+            if [ ! -z "$pkg_main" ]; then
+              local main_path=$(sed "s@\\.@/@g" <<< "$pkg_main")
+              main_path="$path/src/$main_path.sh"
+              mkdir -p $(dirname $main_path)
+              echo -e "function $pkg_name/main() {\n  echo \"Hello world\"\n}" > "$main_path"
+            fi
+
+            git init $path >/dev/null 2>&1
+
             echo -e "\n\e[32mPackage successfully initialized\e[37m"
             echo -e "Use \e[32mbpm package\e[37m to edit package.sh"
             break;
@@ -105,4 +115,23 @@ function cmd/install() {
     #  echo -e "\e[31mPackage not found: $pkg\e[37m"
     #fi
   done
+}
+
+function cmd/run() {
+  local path="$1"
+
+  shift
+  local args
+  read -a args <<< "$@"
+
+  arg/df_path path                                       # Use arg path or $(pwd)
+  arg/df path "$(locator/locate_package $path)" "$path"  # Use arg path as module name and load path ffrom locator
+
+  local pkg_path=$(pkgsh/locate_pkg_root $path)
+
+  if [ -e "$pkg_path" ]; then
+    bash $BPM_RUNNER_PATH $pkg_path ${args[@]}
+  else
+    echo -e "\e[31mCan't locate package file: $path\e[37m"
+  fi
 }
