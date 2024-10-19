@@ -35,6 +35,10 @@ function import/init() {
       exit 1
     else
       import/add_package "$dep" "$dep_path/src"
+      
+      local pkg_deps
+      pkgsh/loadf pkg_deps "dependencies" "$dep_path/package.sh"
+      import/init $pkg_deps
     fi
   done
 }
