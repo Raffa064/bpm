@@ -44,9 +44,7 @@ function pkgsh/load() {
   local -n output="$1"
   local pkgsh_path="$2"
 
-  pkgsh_path=$(pkgsh/locate_pkg_file $pkgsh_path)
-
-  if [ -z "$pkgsh_path" ]; then
+  if [ -z "$pkgsh_path" ] && [ ! -d "$pkgsh_path" ]; then
     return $PKGSH_INVALID_PACKAGE
   fi
 

@@ -60,7 +60,7 @@ function locator/update() {
     else
       if [ "$1" == "--fix" ]; then
         local currName
-        pkgsh/loadf currName "name" "$pkg_path"
+        pkgsh/loadf currName "name" "$pkg_path/package.sh"
         if [ ! "$pkg_name" == "$currName" ]; then
           echo "Renamed: $pkg_name => $currName"
           locator/remove -n $pkg_name                
@@ -75,9 +75,10 @@ function locator/update() {
 
 function locator/index_package() {
   local path="$1"
+  path=$(pkgsh/locate_pkg_root $path)
 
   local name
-  pkgsh/loadf name $path
+  pkgsh/loadf name "$path/package.sh"
   local status=$?
 
   if [ $status -eq 0 ]; then

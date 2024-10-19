@@ -30,8 +30,10 @@ function cmd/locator() {
       esac
       ;;
     remove|-r)
+      local curr_dir="$(pwd)"
+      local pkgsh_path=$(pkgsh/locate_pkg_file $curr_dir)
       local curr_pkg_name
-      pkgsh/loadf curr_pkg_name "name" "$(pwd)"
+      pkgsh/loadf curr_pkg_name "name" "$pkgsh_path"
       arg/df mode_arg "$curr_pkg_name" 
       locator/remove $mode_arg
       ;;
