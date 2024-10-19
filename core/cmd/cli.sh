@@ -32,13 +32,19 @@ function cmd/leak-test() {
 }
 
 function cmd/fix() {
+  echo "Creating bpm dirs.."
   for dir in "${BPM_MKD[@]}"; do
     mkdir -p "$dir"
   done
 
   if [ ! -e "$BPM_LOCATOR_PATH" ]; then
+    echo -e "\e[33mLocator state was lost...\e[37m"
     touch $BPM_LOCATOR_PATH
     locator/save_state
+  else
+    echo "Fixing package index..."
+    locator/load_state
+    locator/update --fix
   fi
 }
 

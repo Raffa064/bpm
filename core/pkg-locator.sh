@@ -51,8 +51,22 @@ function locator/update() {
 
   for pkg_name in "${!LOCATOR[@]}"; do
     local pkg_path="${LOCATOR[$pkg_name]}"
+    
     if [ ! -e "$pkg_path/package.sh" ]; then #TODO: check if name is the same in package.sh to prevent duplified entries
       locator/remove -n $pkg_name
+      if [ "$1" == "--fix" ]; then
+        echo "Lost package: $pkg_name => $pkg_path"
+      fi
+    else
+      if [ "$1" == "--fix" ]; then
+        local currName
+        pkgsh/loadf currName "name" "$pkg_path"
+        if [ ! "$pkg_name" == "$currName" ]; then
+          echo "Renamed: $pkg_name => $currName"
+          locator/remove -n $pkg_name                
+          locator/add -n "$currName" "$pkg_path"
+        fi
+      fi
     fi
   done
 
@@ -95,8 +109,8 @@ function locator/print_index() {
   local term_width=$(tput cols)
   local column_width=$((term_width / 2))
 
-  printf "\e[34m%-${column_width}s%-${column_width}s\e[37m" "Package Name:" "Path:" 
+  printf "\e[34m%-${column_width}s%-${column_width}s\e[37m\n" "Package Name:" "Path:" 
   for i in "${!keys[@]}"; do
-    printf "\e[33m%-${column_width}s%-${column_width}s\e[37m" "${keys[$i]}" $(arg/cutstr "${values[$i]}" $column_width) 
+    printf "\e[33m%-${column_width}s%-${column_width}s\e[37m\n" "${keys[$i]}" $(arg/cutstr "${values[$i]}" $column_width) 
   done
 }
