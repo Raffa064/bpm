@@ -149,7 +149,7 @@ function main() {
   clear
   bash banner.sh
 
-  if [ -e "$BPM_BIN_PATH" ]; then
+  if command -v bpm >/dev/null 2>&1; then
     current_version=$(bpm version)
 
     if [ $BPM_VERSION == "$current_version" ]; then
