@@ -6,7 +6,9 @@ function repos/load_state() {
   
   local repo
   for repo in "${!REPOS[@]}"; do
-    sh/read_obj PACKAGE_ENTRIES "entry" "${REPOS[$repo]}"
+    local -A repo_data
+    repos/get_data repo_data $repo
+    sh/read_obj PACKAGE_ENTRIES "entry" "${repo_data[path]}"
   done
 }
 

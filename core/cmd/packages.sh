@@ -91,12 +91,11 @@ function cmd/list() {
 }
 
 function cmd/install() {
-  local install_packages=""
+  local install_packages="$@"
   local path=$(pwd)
   local pkgsh_path="$(pkgsh/locate_pkg_file $path)"
 
   if [ -z "$pkgsh_path" ]; then
-    echo -e "\e[33mNOTE: You're installing outside an bpm project.\e[37m"
     read -a install_packages <<< "$@" # Convert argmunts into an indexed array
   else
     if [ -z "$install_packages" ]; then
@@ -106,16 +105,34 @@ function cmd/install() {
       pkgsh/loadf dependencies $pkgsh_path
 
       read -a install_packages <<< "$dependencies"
+    else
+      read -a install_packages <<< "$install_packages"
     fi
   fi
 
-  local pkg_path
-  for pkg_path in "${install_packages[@]}"; do
-    echo "pkg: $pkg_path"
-    echo "TODO: locate or install packages here"
-    #if ! get_package $pkg; then
-    #  echo -e "\e[31mPackage not found: $pkg\e[37m"
-    #fi
+  repos/load_state
+
+  local pkg_name
+  for pkg_name in "${install_packages[@]}"; do
+    local pkg_url="${PACKAGE_ENTRIES[$pkg_name]}" 
+    if [ -z "$pkg_url" ]; then
+      echo -e "  \e[31m* Not found: $pkg_name\e[37m"
+    else
+      local pkg_path="$BPM_DEPS_DIR_PATH/$pkg_name"
+      if ! locator/is_indexed $pkg_name; then
+        echo -e "  \e[32m* Installing $pkg_name...\e[37m"
+        
+        mkdir -p pkg_path
+        git clone "$pkg_url" "$pkg_path" >/dev/null 2>&1
+
+        locator/index_package $pkg_path
+      else
+        echo -e "  \e[33m* Updating $pkg_name..."
+        git -C $pkg_path fetch origin
+        git -C $pkg_path reset --hard origin/main
+        echo -e "\e[37m"
+      fi
+    fi
   done
 }
 
