@@ -53,7 +53,7 @@ function generate_executable() {
   echo "$content" > bpm
 
   chmod 700 bpm        # Only current user can access it
-  mv bpm $BPM_BIN_PATH # Move to ~/local/bin
+  mv bpm $BPM_BIN_DIR_PATH # Move to ~/local/bin
 } 
 
 function compile_docs() {
@@ -126,10 +126,10 @@ function compile_runtime() {
 }
 
 function ensure_env_local() {
-  if [[ ! "$PATH" =~ "$BPM_BIN_PATH" ]]; then
+  if [[ ! "$PATH" =~ "$BPM_BIN_DIR_PATH" ]]; then
     echo -e "\e[34mThe '~/.local/bin' dir is not included into your PATH\e[37m"
     echo -e "  * Adding to \e[32m~/.bashrc\e[37m..."
-    echo "export PATH=\"\$PATH:$BPM_BIN_PATH\"" >> "$HOME/.bashrc"
+    echo "export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\"" >> "$HOME/.bashrc"
     echo -e "\e[33mNOTE: You will need to reload your bash session to use bpm.\e[37m"
   fi
 }

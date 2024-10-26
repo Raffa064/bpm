@@ -50,7 +50,7 @@ function cmd/fix() {
 
 function cmd/uninstall() {
   echo -e "\e[33mUninstalling executable scripts....\e[37m"
-  rm "$BPM_BIN_PATH/bpm"
+  rm "$BPM_BIN_DIR_PATH/bpm"
   rm "$BPM_CORE_PATH"
 
   if [ "$1" == "-d" ]; then

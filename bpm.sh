@@ -15,3 +15,8 @@ else
   cmd/help
   echo -e "\e[31mInvalid option: $1\e[37m"
 fi
+
+# Preventing to delete the entire root path
+if [ ! -z "$BPM_TMP_DIR_PATH" ]; then
+  rm -rf "$BPM_TMP_DIR_PATH/*" 
+fi
