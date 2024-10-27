@@ -149,6 +149,9 @@ function main() {
   clear
   bash banner.sh
 
+  # Lock bpm
+  touch $BPM_INSTALL_LOCK_PATH
+
   if command -v bpm >/dev/null 2>&1; then
     current_version=$(bpm version)
 
@@ -180,6 +183,8 @@ function main() {
   else
     install_bpm
   fi
+
+  rm $BPM_INSTALL_LOCK_PATH
 }
 
 main
