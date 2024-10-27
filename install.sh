@@ -1,5 +1,9 @@
 #!/bin/bash
 
+if [ -n "$SUDO_USER" ]; then
+  export HOME=$(eval echo "~$SUDO_USER")
+fi
+
 source core/bpm-vars.sh
 source core/sh-obj.sh
 source core/arg.sh
