@@ -60,9 +60,18 @@ function repo/remove() {
   fi
 }
 
-function repo/list() { 
-  for repo in "${!REPOS[@]}"; do
-    echo "$repo"
+function repo/list() {
+  local pkg_name  
+  for pkg_name in "${!PACKAGE_ENTRIES[@]}"; do
+    if [ ! "$pkg_name" == "--repo-name" ]; then
+      echo "$pkg_name"
+    fi
+  done
+}
+
+function repo/list-repos() {
+  for pkg_name in "${!REPOS[@]}"; do
+    echo "$pkg_name"
   done
 }
 
@@ -76,7 +85,7 @@ function repo/update() {
   local repo_name="$1"
 
   if [ -z "$repo_name" ]; then
-    for repo_name in $(repo/list); do
+    for repo_name in $(repo/list-repos); do
       repo/update -s $repo_name
     done
     return
