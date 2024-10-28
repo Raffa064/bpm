@@ -1,0 +1,14 @@
+Repository management
+
+bpm repo <command> [(params,...)]
+
+Commands:
+>add &lt;url&gt;<                - Install a repo from a given url.
+                           A repository is just an "sh-obj" file, that might specify key-value 
+                           pairs in the format: "entry[package-name]='URL'"
+>remove &lt;repo_name&gt;<       - Remove some repo.
+>list<                     - List all packages from installed repos.
+>list-repos<               - List all installed repos.
+>update [repo_name]<       - It will re-install the repo from the same url it has been installed.
+                           >NOTE:< If you call update without arguments, it will update all repos.
+

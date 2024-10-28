@@ -5,6 +5,7 @@ bpm <command> (arguments...)
 Commands:
 >help<      - Show this dialog
 >version<   - Display bpm version
+>repo<      - Manage repositories
 >init<      - Creates a new bpm project
 >package<   - Open package.sh with your default text editor from >$EDITOR<
 >list<      - List installed packages
