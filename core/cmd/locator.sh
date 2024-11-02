@@ -28,6 +28,7 @@ function cmd/locator() {
           echo -e "\e[32mPackage index sucessfully updated\e[37m"
           ;;
       esac
+      return $status
       ;;
     remove|-r)
       local curr_dir="$(pwd)"

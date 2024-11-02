@@ -33,6 +33,7 @@ function cmd/leak-test() {
 
 function cmd/fix() {
   echo "Creating bpm dirs.."
+  local dir
   for dir in "${BPM_MKD[@]}"; do
     mkdir -p "$dir"
   done
@@ -46,6 +47,17 @@ function cmd/fix() {
     locator/load_state
     locator/update --fix
   fi
+
+  echo "Indexing dependencies..."
+  local dep_package
+  for dep_package in $(ls $BPM_DEPS_DIR_PATH); do
+    cmd/locator -i "$BPM_DEPS_DIR_PATH/$dep_package" >/dev/null 2>&1
+    local status=$?
+
+    if [ $status -ne 0 ]; then
+      echo "Failed to fix deps/$dep_package"
+    fi
+  done
 }
 
 function cmd/uninstall() {
