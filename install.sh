@@ -153,8 +153,18 @@ function main() {
   clear
   bash banner.sh
 
-  # Lock bpm
-  touch $BPM_INSTALL_LOCK_PATH
+  # Check for permissions
+  if command -v sudo &>/dev/null 2>&1; then 
+    if [ $EUID -ne 0 ]; then
+      echo -e "\e[33m* This script must be runned as sudo\e[37m"
+      exit 1
+    fi
+  fi
+
+  # Create lock file if not exists
+  if [ ! -e "$BPM_INSTALL_LOCK_PATH" ]; then
+    touch $BPM_INSTALL_LOCK_PATH
+  fi
 
   if command -v bpm >/dev/null 2>&1; then
     current_version=$(bpm version)
