@@ -2,4 +2,7 @@ Fix BPM files
 
 bpm fix
 
-This command could be used to rebuild bpm dirs, and configuration files.
+This command could be used to solve a bunch of problems:
+- (Re)create deleted directories
+- Fix removed locator state files
+- Automatically index all dependedncy packages from >deps dir< (Could be userfull if they are renamed) 
