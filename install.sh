@@ -130,10 +130,12 @@ function compile_runtime() {
 }
 
 function ensure_env_local() {
-  if [[ ! "$PATH" =~ "$BPM_BIN_DIR_PATH" ]]; then
+  local source_bpm="export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\""
+
+  if ! grep -Fxq "$source_bpm" "$HOME/.bashrc"; then
     echo -e "\e[34mThe '~/.local/bin' dir is not included into your PATH\e[37m"
     echo -e "  * Adding to \e[32m~/.bashrc\e[37m..."
-    echo "export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\"" >> "$HOME/.bashrc"
+    echo "$source_bpm" >> "$HOME/.bashrc"
     echo -e "\e[33mNOTE: You will need to reload your bash session to use bpm.\e[37m"
   fi
 }
