@@ -141,6 +141,11 @@ function ensure_env_local() {
 }
 
 function install_bpm() {
+   # Create lock file if not exists
+  if [ ! -e "$BPM_INSTALL_LOCK_PATH" ]; then
+    touch $BPM_INSTALL_LOCK_PATH
+  fi
+
   download_dependencies
   make_dirs  
   generate_executable
@@ -149,6 +154,8 @@ function install_bpm() {
   ensure_env_local
 
   echo -e "\n\e[32mInstallation successfully finished!\e[37m"
+  
+  rm $BPM_INSTALL_LOCK_PATH
 }
 
 function main() {
@@ -163,12 +170,7 @@ function main() {
     fi
   fi
 
-  # Create lock file if not exists
-  if [ ! -e "$BPM_INSTALL_LOCK_PATH" ]; then
-    touch $BPM_INSTALL_LOCK_PATH
-  fi
-
-  if command -v bpm >/dev/null 2>&1; then
+   if command -v bpm >/dev/null 2>&1; then
     current_version=$(bpm version)
 
     if [ $BPM_VERSION == "$current_version" ]; then
@@ -181,7 +183,7 @@ function main() {
         case $op in
           "y"|"Y")
             install_bpm
-            exit
+            break
             ;;
           "n"|"N")
             echo "Aborting operation..."
@@ -199,8 +201,11 @@ function main() {
   else
     install_bpm
   fi
-
-  rm $BPM_INSTALL_LOCK_PATH
 }
 
 main
+
+if [ -e "./test.sh" ]; then
+  echo "Runnning test script..."
+  bash ./test.sh
+fi

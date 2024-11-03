@@ -86,6 +86,67 @@ function cmd/package() {
   fi
 }
 
+function cmd/remove() {
+  local packages="$@"
+  read -a packages <<< "$packages"
+
+  local trash_dir="$BPM_CACHE_DIR_PATH/trash"
+  mkdir -p "$trash_dir"
+
+  echo "Removing packages..."
+  local pkg_name
+  for pkg_name in "${packages[@]}"; do
+    local pkg_path=$(locator/locate_package $pkg_name)
+    if [ -n "$pkg_path" ]; then
+      echo -e "  \e[33m* Moving '$pkg_name' to trash...\e[37m"
+      locator/remove "$pkg_name"
+      
+      echo "$pkg_path" >> "$pkg_path/.path"
+      mv "$pkg_path" "$trash_dir/$pkg_name"
+    else
+      echo -e "  \e[31m* Package $pkg_name not found:\e[37m"
+    fi
+  done
+
+  cd $trash_dir
+  zip -r "../trash.zip" "." >/dev/null 2>&1
+  rm -rf "$trash_dir"
+
+  echo -e "\e[34mRun 'bpm clean' to delete packages\e[37m"
+}
+
+function cmd/restore() {
+  local pkg_name="$1"
+
+  #args/ls-call cmd/restore $@
+
+  local trash_path="$BPM_CACHE_DIR_PATH/trash.zip" 
+  if [ -e "$trash_path" ] && [[ ! "$(unzip -l $trash_path 2>&1)" =~ "is empty" ]]; then  
+    cd $BPM_CACHE_DIR_PATH
+    unzip trash.zip "$pkg_name/*" >/dev/null 2>&1
+    local status=$?
+
+    if [ $status -eq 0 ]; then
+      zip -d trash.zip "$pkg_name/*" >/dev/null 2>&1
+
+      local pkg_path=$(cat "$pkg_name/.path")
+      rm "$pkg_name/.path"
+
+      mv "$pkg_name" "$pkg_path"
+      cmd/locator -i $pkg_path
+    else
+      echo -e "\e[31mNot found: $pkg_name\e[37m"
+    fi
+  else
+    echo -e "\e[33mTrash is empty\e[37m"
+  fi
+}
+
+function cmd/clean() {
+  echo "Cleaning cache..."
+  rm -rf "$BMP_CACHE_DIR_PATH"
+}
+
 function cmd/list() {
   cmd/locator -p
 }
