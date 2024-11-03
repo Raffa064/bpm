@@ -66,3 +66,22 @@ function arg/cutstr() {
     echo "$str"
   fi
 }
+function arg/confirm() {
+  local -n output="$1"
+
+  while :; do
+    echo "Confirm? (Y/n)"
+    read op
+
+    case $op in
+      "y"|"Y")
+        output=0
+        return
+        ;;
+      "n"|"N")
+        output=1
+        return
+        ;;
+    esac
+  done
+}

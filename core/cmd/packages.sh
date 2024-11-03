@@ -97,7 +97,19 @@ function cmd/remove() {
   local pkg_name
   for pkg_name in "${packages[@]}"; do
     local pkg_path=$(locator/locate_package $pkg_name)
+
     if [ -n "$pkg_path" ]; then
+      if [ "$BPM_DEPS_DIR_PATH" != "$(dirname "$pkg_path")" ]; then
+        echo -e "\e[34m[?] $pkg_name is a local package, move anyway?\e[37m"
+        local confirm
+        arg/confirm confirm 1
+
+        if [ $confirm -ne 0 ]; then
+          echo -e "  \e[33m* Skipped $pkg_name\e[37m"
+          continue
+        fi
+      fi
+
       echo -e "  \e[33m* Moving '$pkg_name' to trash...\e[37m"
       locator/remove "$pkg_name"
       
