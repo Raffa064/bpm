@@ -143,8 +143,14 @@ function cmd/restore() {
 }
 
 function cmd/clean() {
-  echo "Cleaning cache..."
-  rm -rf "$BMP_CACHE_DIR_PATH"
+  local trash_path="$BPM_CACHE_DIR_PATH/trash.zip"
+  if [ -e "$trash_path" ]; then
+    local size=$(du -sh $trash_path | cut -f1)
+    echo "Cleaning trash... $size"
+    rm "$trash_path"
+  else
+    echo "Nothing to clear"
+  fi
 }
 
 function cmd/list() {
