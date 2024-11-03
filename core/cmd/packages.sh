@@ -117,8 +117,7 @@ function cmd/remove() {
 
 function cmd/restore() {
   local pkg_name="$1"
-
-  #args/ls-call cmd/restore $@
+  local pkg_path="$2"
 
   local trash_path="$BPM_CACHE_DIR_PATH/trash.zip" 
   if [ -e "$trash_path" ] && [[ ! "$(unzip -l $trash_path 2>&1)" =~ "is empty" ]]; then  
@@ -129,9 +128,13 @@ function cmd/restore() {
     if [ $status -eq 0 ]; then
       zip -d trash.zip "$pkg_name/*" >/dev/null 2>&1
 
-      local pkg_path=$(cat "$pkg_name/.path")
+      if [ -z "$pkg_path" ]; then
+        pkg_path=$(cat "$pkg_name/.path")
+      fi
+
       rm "$pkg_name/.path"
 
+      mkdir -p $(dirname $pkg_path)
       mv "$pkg_name" "$pkg_path"
       cmd/locator -i $pkg_path
     else

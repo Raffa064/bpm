@@ -27,6 +27,13 @@ function cmd/version() {
 }
 
 function cmd/leak-test() {
+  local val="$1"
+
+  if [ -n "$val" ]; then
+    echo "${!val-Not found $val}"
+    return
+  fi
+
   local env="$(set)"
   cat <<< "$env"
 }
