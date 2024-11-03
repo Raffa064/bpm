@@ -8,10 +8,12 @@ Commands:
 >repo<      - Manage repositories
 >init<      - Creates a new bpm project
 >package<   - Open package.sh with your default text editor from >$EDITOR<
+>remove<    - Move packages into the trash
+>restore<   - Restore removed packages
+>clean<     - Empty the trash
 >list<      - List installed packages
 >install<   - Install project dependencies
 >update<    - Update remote packages
->remove<    - Delete some package
 >run<       - Run executable packages
 >locator<   - Update locator index for package
 >fix<       - Fix broken bpm files and directories

@@ -1,0 +1,6 @@
+Remove packages
+
+bpm remove (<package>...)
+
+All packages listed to be removed will be moved to a trash dir them compressed into a trash.zip, that's locateed at bpm cache dir.
+You can restore removed pacakges with >bpm restore<, and clear the trash with >bpm clean<.

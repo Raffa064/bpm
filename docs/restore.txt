@@ -1,0 +1,5 @@
+Restore removed packages
+
+bpm restore <pkg-name> [<new-path>]
+
+Restores removed package at the original location, or at the specified path.

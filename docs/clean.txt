@@ -1,0 +1,5 @@
+Clear trash
+
+bpm clear
+
+It will empty the trash.
