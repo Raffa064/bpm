@@ -140,6 +140,18 @@ function ensure_env_local() {
   fi
 }
 
+function generate_autocomplete() {
+  echo "Generating autocomplete..."
+ 
+  bash ./gen-cmp.sh
+
+  local source_cmp="source $BPM_AUTOCOMPLETE_PATH"
+  if ! grep -Fxq "$source_cmp" "$HOME/.bashrc"; then
+    echo "  * Adding to ~/.bashrc..."
+    echo "$source_cmp" >> "$HOME/.bashrc"
+  fi
+} 
+
 function install_bpm() {
    # Create lock file if not exists
   if [ ! -e "$BPM_INSTALL_LOCK_PATH" ]; then
@@ -152,6 +164,7 @@ function install_bpm() {
   compile_coresh
   compile_runtime
   ensure_env_local
+  generate_autocomplete
 
   echo -e "\n\e[32mInstallation successfully finished!\e[37m"
   

@@ -1,3 +1,4 @@
+cmp_repo="add remove list list-repos update"
 function cmd/repo() {
   local command="$1"
   shift

@@ -1,3 +1,4 @@
+cmp_locator="print update index remove locate"
 function cmd/locator() {
   local mode="$1"
   local mode_arg="$2"

@@ -96,6 +96,7 @@ function cmd/fix() {
   done
 }
 
+cmp_uninstall="-d"
 function cmd/uninstall() {
   echo -e "\e[33mUninstalling executable scripts....\e[37m"
   rm "$BPM_BIN_DIR_PATH/bpm"
