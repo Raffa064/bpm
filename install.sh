@@ -143,12 +143,13 @@ function ensure_env_local() {
 function generate_autocomplete() {
   echo "Generating autocomplete..."
  
-  bash ./gen-cmp.sh
+  bash ./gen-cmp.sh # Generate autocomplete script
 
   local source_cmp="source $BPM_AUTOCOMPLETE_PATH"
   if ! grep -Fxq "$source_cmp" "$HOME/.bashrc"; then
     echo "  * Adding to ~/.bashrc..."
     echo "$source_cmp" >> "$HOME/.bashrc"
+    echo -e "\e[33mNOTE: You will need to reload your bash session to apply completion.\e[37m"
   fi
 } 
 
