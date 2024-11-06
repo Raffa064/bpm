@@ -26,6 +26,20 @@ function cmd/version() {
   echo $BPM_VERSION
 }
 
+function cmd/update() {
+  echo "Cloning repo files..."
+  cd "$BPM_DIR_PATH"
+  git clone https://github.com/Raffa064/bpm --depth 1 bpm-clone >/dev/null 2>&1
+  cd ./bpm-clone
+
+  echo "Running installation script..."
+  yes | bash ./install.sh >/dev/null
+
+  echo "Removing installation files..."
+  cd ..
+  rm -rf bpm-clone
+}
+
 function cmd/leak-test() {
   # bpm leak-test query -> print value of a global var
   # bpm leak-test query command [-f (arg, ...)]-> print value of a global var after running command

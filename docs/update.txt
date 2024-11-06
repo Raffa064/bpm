@@ -1,7 +1,5 @@
 Update packages
 
-bpm update [(package...)]
+bpm update
 
-When it is called, it will check for updates for all specified packages. If you call without any argument, it will update all >installed packages<.
-
->NOTE:< It will only works for >installed packages<, which means that it can't update >local packages (outside deps dir)<.
+Updates bpm to the latest version

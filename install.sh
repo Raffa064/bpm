@@ -170,10 +170,7 @@ function fix_errors_and_configure() {
 }
 
 function install_bpm() {
-   # Create lock file if not exists
-  if [ ! -e "$BPM_INSTALL_LOCK_PATH" ]; then
-    touch $BPM_INSTALL_LOCK_PATH
-  fi
+  touch $BPM_INSTALL_LOCK_PATH # Create lock file
 
   download_dependencies
   make_dirs  
@@ -183,7 +180,7 @@ function install_bpm() {
   ensure_env_local
   generate_autocomplete
  
-  rm $BPM_INSTALL_LOCK_PATH
+  rm $BPM_INSTALL_LOCK_PATH # Remove lock file
   
   fix_errors_and_configure
   
