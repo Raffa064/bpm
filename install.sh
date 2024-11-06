@@ -153,6 +153,15 @@ function generate_autocomplete() {
   fi
 } 
 
+function fix_errors_and_configure() {
+  echo "Fixing possible errors..."
+  bpm fix
+
+  echo "Installing official repo..."
+  local official_repo="https://raw.githubusercontent.com/Raffa064/bpm/refs/heads/main/repo/official.sh"
+  bpm repo add "$official_repo"
+}
+
 function install_bpm() {
    # Create lock file if not exists
   if [ ! -e "$BPM_INSTALL_LOCK_PATH" ]; then
@@ -166,10 +175,12 @@ function install_bpm() {
   compile_runtime
   ensure_env_local
   generate_autocomplete
-
-  echo -e "\n\e[32mInstallation successfully finished!\e[37m"
-  
+ 
   rm $BPM_INSTALL_LOCK_PATH
+  
+  fix_errors_and_configure
+  
+  echo -e "\n\e[32mInstallation successfully finished!\e[37m"
 }
 
 function main() {
