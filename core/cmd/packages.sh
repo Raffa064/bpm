@@ -210,9 +210,8 @@ function cmd/install() {
         locator/index_package $pkg_path
       else
         echo -e "  \e[33m* Updating $pkg_name..."
-        git -C $pkg_path fetch origin
-        git -C $pkg_path reset --hard origin/main
-        echo -e "\e[37m"
+        git -C $pkg_path fetch origin >/dev/null 2>&1
+        git -C $pkg_path reset --hard origin/main >/dev/null 2>&1
       fi
     fi
   done
