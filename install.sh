@@ -158,7 +158,8 @@ function fix_errors_and_configure() {
   bpm fix
 
   echo "Checking for repos..."
-  if [[ "$(bpm repo list)" =~ "official" ]]; then
+  local repo_list="$(bpm repo list-repos)"
+  if [[ ! "$repo_list" =~ official ]]; then
     echo "* Installing official repo..."
     local official_repo="https://raw.githubusercontent.com/Raffa064/bpm/refs/heads/main/repo/official.sh"
     bpm repo add "$official_repo"

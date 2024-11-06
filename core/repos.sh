@@ -43,10 +43,15 @@ function repos/remove() {
   local -A repo_data
   repos/get_data repo_data "$repo_name"
 
-  rm ${repo_data[path]}
-  unset REPOS[$repo_name]
+  local repo_path="${repo_data[path]}"
+  if [ -e "$repo_path" ]; then
+    rm "$repo_path"
+    unset REPOS[$repo_name]
+    repos/save_state
+    return 0
+  fi
 
-  repos/save_state
+  return 1
 }
 
 function repos/download() {

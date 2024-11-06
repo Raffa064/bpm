@@ -54,10 +54,15 @@ function repo/add() {
 function repo/remove() {
   local repo_name="$1"
 
-  if [ ! -z "$repo_name" ]; then
+  if [ -n "$repo_name" ]; then
     repos/remove "$repo_name"
+    local status=$?
+
+    if [ $status -ne 0 ]; then
+      echo -e "\e[31mRepo not found\e[37m"
+    fi
   else
-    echo -e "\e[31mCan't locate repo: '$repo_name'\e[37m"
+    echo -e "\e[33mRepo name must be specified\e[37m"
   fi
 }
 
@@ -80,7 +85,7 @@ function repo/update() {
   if [ "$1" == "-s" ]; then
     shift
   else
-    echo "Updating repo(s): $@"
+    echo "Updating repositories..."
   fi
 
   local repo_name="$1"
