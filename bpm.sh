@@ -23,5 +23,5 @@ else
 fi
 
 if [ ! -z "$BPM_TMP_DIR_PATH" ]; then  # Preventing to delete the entire root path
-  rm -rf "$BPM_TMP_DIR_PATH/" 
+  rm -rf "$BPM_TMP_DIR_PATH"/* 
 fi

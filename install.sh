@@ -157,9 +157,15 @@ function fix_errors_and_configure() {
   echo "Fixing possible errors..."
   bpm fix
 
-  echo "Installing official repo..."
-  local official_repo="https://raw.githubusercontent.com/Raffa064/bpm/refs/heads/main/repo/official.sh"
-  bpm repo add "$official_repo"
+  echo "Checking for repos..."
+  if [[ "$(bpm repo list)" =~ "official" ]]; then
+    echo "* Installing official repo..."
+    local official_repo="https://raw.githubusercontent.com/Raffa064/bpm/refs/heads/main/repo/official.sh"
+    bpm repo add "$official_repo"
+  else
+    echo "* Updating repos..."
+    bpm repo update
+  fi
 }
 
 function install_bpm() {
