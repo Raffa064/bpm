@@ -206,12 +206,23 @@ function cmd/install() {
         
         mkdir -p pkg_path
         git clone "$pkg_url" "$pkg_path" >/dev/null 2>&1
+        local status=$?
 
-        locator/index_package $pkg_path
+        if [ $status -eq 0 ]; then
+          locator/index_package $pkg_path
+        else
+          echo -e "  \e[31m- Error while installing package\e[37m"
+        fi
       else
         echo -e "  \e[33m* Updating $pkg_name..."
         git -C $pkg_path fetch origin >/dev/null 2>&1
-        git -C $pkg_path reset --hard origin/main >/dev/null 2>&1
+        local status=$?
+
+        if [ $status -eq 0 ]; then
+          git -C $pkg_path reset --hard origin/main >/dev/null 2>&1
+        else
+          echo -e "  \e[31m- Error while updating package\e[37m"
+        fi
       fi
     fi
   done
