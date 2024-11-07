@@ -204,7 +204,7 @@ function cmd/install() {
       if ! locator/is_indexed $pkg_name; then
         echo -e "  \e[32m* Installing $pkg_name...\e[37m"
         
-        mkdir -p pkg_path
+        mkdir -p $pkg_path
         git clone "$pkg_url" "$pkg_path" >/dev/null 2>&1
         local status=$?
 
