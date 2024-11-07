@@ -1,13 +1,10 @@
 #!/bin/bash
 
-if [ -n "$SUDO_USER" ]; then
-  export HOME=$(eval echo "~$SUDO_USER")
-fi
-
 source core/bpm-vars.sh
 source core/sh-obj.sh
 source core/arg.sh
 
+SUDO=""
 INSTALL_COMMAND="apt install"
 
 function check_for_install_command() {
@@ -37,7 +34,7 @@ function download_dependencies() {
       echo -e "  * \e[32m$dep\e[37m is installed"
     else
       echo -e "  * \e[31m$dep\e[37m is not installed\n  \e[33mInstalling...\e[37m"
-      eval "yes | $INSTALL_COMMAND $dep" >/dev/null 2>&1
+      eval "yes | $SUDO$INSTALL_COMMAND $dep" >/dev/null 2>&1
     fi
   done
 }
@@ -192,11 +189,16 @@ function main() {
   bash banner.sh
 
   # Check for permissions
-  if command -v sudo &>/dev/null 2>&1; then 
-    if [ $EUID -ne 0 ]; then
-      echo -e "\e[33m* This script must be runned as sudo\e[37m"
+  if command -v sudo &>/dev/null 2>&1; then # Check if the system has sudo 
+    if [ $EUID -eq 0 ]; then
+      echo -e "\e[33m* This script can't be runned as sudo\e[37m"
       exit 1
     fi
+
+    SUDO="sudo "
+
+    echo "SUDO permission is necessary to install dependencies"
+    sudo -v # Ask for sudo password
   fi
 
    if command -v bpm >/dev/null 2>&1; then
