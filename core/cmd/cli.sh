@@ -116,6 +116,8 @@ function cmd/uninstall() {
   rm "$BPM_BIN_DIR_PATH/bpm"
   rm "$BPM_CORE_PATH"
 
+  bash $BPM_BASH_INSERTION_PATH remove
+
   if [ "$1" == "-d" ]; then
     echo -e "\e[33mFully deleting all state and installed packages\e[37m"
     rm -rf "$BPM_DIR_PATH"

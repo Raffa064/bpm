@@ -6,6 +6,7 @@ source core/arg.sh
 
 SUDO=""
 INSTALL_COMMAND="apt install"
+BPM_BASH_INSERTION=( "source $BPM_BASH_INSERTION_PATH" )
 
 function check_for_install_command() {
   while :; do
@@ -55,6 +56,8 @@ function generate_executable() {
 
   chmod 700 bpm        # Only current user can access it
   mv bpm $BPM_BIN_DIR_PATH # Move to ~/local/bin
+
+  BPM_BASH_INSERTION+=( "export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\"" )
 } 
 
 function compile_docs() {
@@ -126,28 +129,12 @@ function compile_runtime() {
   rm -rf tmp
 }
 
-function ensure_env_local() {
-  local source_bpm="export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\""
-
-  if ! grep -Fxq "$source_bpm" "$HOME/.bashrc"; then
-    echo -e "\e[34mThe '~/.local/bin' dir is not included into your PATH\e[37m"
-    echo -e "  * Adding to \e[32m~/.bashrc\e[37m..."
-    echo "$source_bpm" >> "$HOME/.bashrc"
-    echo -e "\e[33mNOTE: You will need to reload your bash session to use bpm.\e[37m"
-  fi
-}
-
 function generate_autocomplete() {
   echo "Generating autocomplete..."
  
   bash ./gen-cmp.sh # Generate autocomplete script
 
-  local source_cmp="source $BPM_AUTOCOMPLETE_PATH"
-  if ! grep -Fxq "$source_cmp" "$HOME/.bashrc"; then
-    echo "  * Adding to ~/.bashrc..."
-    echo "$source_cmp" >> "$HOME/.bashrc"
-    echo -e "\e[33mNOTE: You will need to reload your bash session to apply completion.\e[37m"
-  fi
+  BPM_BASH_INSERTION+=( "source $BPM_AUTOCOMPLETE_PATH" )
 } 
 
 function fix_errors_and_configure() {
@@ -166,6 +153,42 @@ function fix_errors_and_configure() {
   fi
 }
 
+function generate_bash_insertion() {
+  echo "Generating bash insertion..." 
+
+  local gen_script
+  local ins
+  for ins in "${BPM_BASH_INSERTION[@]}"; do
+    gen_script+="insert \$MODE '$ins'
+"
+  done
+
+  local template="MODE=\"\$1\"
+
+function insert() {
+  local opt=\"\$1\"
+  local insertion=\"\$2\"
+
+  case \$opt in
+    add)  
+      if ! grep -Fxq \"\$insertion\" \"\$HOME/.bashrc\"; then
+        echo \"\$insertion\" >> \"\$HOME/.bashrc\"
+      fi
+      ;;
+    remove)
+      sed -i \"s@\$insertion@@g\" \"\$HOME/.bashrc\"
+      ;;
+  esac
+}
+
+$gen_script
+"
+  echo "$template" > "$BPM_BASH_INSERTION_PATH"
+
+  echo "  * Running bash inserion script..."
+  bash $BPM_BASH_INSERTION_PATH add
+}
+
 function install_bpm() {
   touch $BPM_INSTALL_LOCK_PATH # Create lock file
 
@@ -174,8 +197,8 @@ function install_bpm() {
   generate_executable
   compile_coresh
   compile_runtime
-  ensure_env_local
   generate_autocomplete
+  generate_bash_insertion
  
   rm $BPM_INSTALL_LOCK_PATH # Remove lock file
   
