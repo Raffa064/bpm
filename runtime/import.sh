@@ -90,6 +90,12 @@ function import() {
   
   local script_path
   import/resolve script_path $import_path
+  local status=$?
+  
+  if [ $status -ne 0 ]; then
+    echo -e "\e[31mImport error: Can't locate script: $import_path err_code=$status\e[37m"
+    exit
+  fi
 
   import/format_path import_path
   if [ -z "${IMPORTED_SCRIPTS[$import_path]}" ]; then
