@@ -6,9 +6,9 @@ function repo-man/load_state() {
   
   local repo
   for repo in "${!REPOS[@]}"; do
-    local -A repo_data
-    repo-man/get_data repo_data $repo
-    bpr-repo PACKAGE_ENTRIES "${repo_data[path]}"
+    local -A repo_info
+    repo-man/get_info repo_info $repo
+    bpr-repo PACKAGE_ENTRIES "${repo_info[path]}"
   done
 
   # Remove loaded metadata
@@ -20,7 +20,7 @@ function repo-man/save_state() {
   sh/write_obj REPOS "repo" "$BPM_REPOS_SH_PATH"
 }
 
-function repo-man/get_data() {
+function repo-man/get_info() {
   local -n output="$1"
   local repo_name="$2"
 
@@ -45,10 +45,10 @@ function repo-man/add() {
 function repo-man/remove() {
   local repo_name="$1"
 
-  local -A repo_data
-  repo-man/get_data repo_data "$repo_name"
+  local -A repo_info
+  repo-man/get_info repo_info "$repo_name"
 
-  local repo_path="${repo_data[path]}"
+  local repo_path="${repo_info[path]}"
   if [ -e "$repo_path" ]; then
     rm "$repo_path"
     unset REPOS[$repo_name]

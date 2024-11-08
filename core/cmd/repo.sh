@@ -99,11 +99,11 @@ function repo/update() {
     return
   fi
 
-  local -A repo_data
-  repo-man/get_data repo_data "$repo_name"
+  local -A repo_info
+  repo-man/get_info repo_info "$repo_name"
 
-  local repo_url="${repo_data[url]}"
-  local repo_path="${repo_data[path]}"
+  local repo_url="${repo_info[url]}"
+  local repo_path="${repo_info[path]}"
   local update_path=$(repo-man/download "$repo_url")
 
   if [ -z "$update_path" ]; then 
