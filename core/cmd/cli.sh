@@ -10,10 +10,14 @@ function cmd/help() {
       command=$(sed -n "3p" <<< "$help_content")
       description=$(sed "1,3d" <<< "$help_content")
 
-      local highlighted="\n\e[35m# $title\n\n \e[32m$\e[36m $command\e[33m\n$description\e[37m\n"
+      if [ -n "$command" ]; then
+        command="\n\n  \e[32m$\e[36m $command" 
+      fi
 
-      highlighted=$(sed 's/"\([^"]*\)"/\\e[32m"\1"\\e[33m/g' <<< "$highlighted")   # "TEXT" 
-      highlighted=$(sed 's/>\([^<]*\)</\\e[36m\1\\e[33m/g' <<< "$highlighted") # >TEXT<
+      local highlighted="\n\e[35m# $title$command\e[33m\n$description\e[37m\n"
+
+      highlighted=$(sed 's/"\([^"]*\)"/\\e[32m"\1"\\e[33m/g' <<< "$highlighted") # "TEXT" 
+      highlighted=$(sed 's/>\([^<]*\)</\\e[36m\1\\e[33m/g' <<< "$highlighted")   # >TEXT<
       highlighted=$(sed 's/&lt;/</g' <<< "$highlighted") # <
       highlighted=$(sed 's/&gt;/>/g' <<< "$highlighted") # >
       
