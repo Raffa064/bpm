@@ -1,0 +1,17 @@
+BPM's register
+
+
+This file format is a generic way to store data in key-pairs values, with difererent "types".
+
+The basic structure of a >bpr< file is defined by this simple format:
+>extension-type key=value<
+
+The >extension-type< can implement rules for that entry. Ex:
+  - The extension type can add prefixes or sufixes to the loaded data
+  - It can also check if the key or values is invalid for semantic reasons
+  - It can manipulate the loaded key or value if necessary
+
+>Where it is used by bpm?<
+All BPM's repositories need to use this format, implementing two simple extensions for "bpr-repo":
+  'metadata' -> Loads repo name and author's name for each repo
+  'entry'    -> Stores package's name and url to be installed

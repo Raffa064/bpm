@@ -4,8 +4,7 @@ bpm repo <command> [(params,...)]
 
 Commands:
 >add &lt;url&gt;<                - Install a repo from a given url.
-                           A repository is just an "sh-obj" file, that might specify key-value 
-                           pairs in the format: "entry[package-name]='URL'"
+                           A repository is a >bpr< file, you can read more about using: >bpm help bpr<
 >remove &lt;repo_name&gt;<       - Remove some repo.
 >list<                     - List all packages from installed repos.
 >list-repos<               - List all installed repos.
