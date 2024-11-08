@@ -154,6 +154,11 @@ function fix_errors_and_configure() {
 }
 
 function generate_bash_insertion() {
+  if [ -e "$BPM_BASH_INSERTION_PATH" ]; then
+    echo "Removing old insertions..."
+    bash "$BPM_BASH_INSERTION_PATH" remove
+  fi
+
   echo "Generating bash insertion..." 
 
   local gen_script
@@ -186,7 +191,7 @@ $gen_script
   echo "$template" > "$BPM_BASH_INSERTION_PATH"
 
   echo "  * Running bash inserion script..."
-  bash $BPM_BASH_INSERTION_PATH add
+  bash "$BPM_BASH_INSERTION_PATH" add
 }
 
 function install_bpm() {
