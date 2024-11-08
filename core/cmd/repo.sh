@@ -3,7 +3,7 @@ function cmd/repo() {
   local command="$1"
   shift
 
-  repos/load_state
+  repo-man/load_state
 
   local command_function="repo/$command"
   
@@ -18,7 +18,7 @@ function repo/add() {
   local repo_url="$1"
 
   echo "Downloanding repo file..."
-  local tmp=$(repos/download $repo_url)
+  local tmp=$(repo-man/download $repo_url)
 
   if [ -z "$tmp" ]; then
     echo -e "\e[31mCan't locate repo file from url: $repo_url"
@@ -26,36 +26,40 @@ function repo/add() {
   fi
 
   echo "Reading metadata..."
-  local -A entry
-  sh/read_obj entry "$tmp"
+  local -A data
+  bpr-repo data "$tmp"
+  local status=$?
 
-  local repo_name="${entry[--repo-name]}"
-  local repo_path="$BPM_REPOS_DIR_PATH/$repo_name.sh"
-  local repo_count="${#entry[@]}"
-  repo_count=$((repo_count - 1))
 
-  echo "  * Repo name: $repo_name" 
-  echo "  * Package count: $repo_count" 
+  if [ $status -ne 0 ]; then
+    echo -e "  \e[31m* Error while reading repo: $status\e[37m"
+    return
+  fi
+
+  local repo_name="${data[--metadata-name]}"
+  local repo_path="$BPM_REPOS_DIR_PATH/$repo_name.bpr"
 
   if [ -e "$repo_path" ]; then
     echo -e "\e[33mRepo file already exists!\e[37m"
-    local repo_data="${REPOS[$repo_name]}"
-    read -a repo_data <<< "$repo_data"
-    echo -e "\e[34m  * Url:  ${repo_data[0]}\n  * Path: ${repo_data[1]}\e[37m"
+    local data="${REPOS[$repo_name]}"
+    read -a data <<< "$data"
+    echo -e "\e[34m  * Url:  ${data[0]}\n  * Path: ${data[1]}\e[37m"
     echo -e "\e[31m[Aborted]\e[37m"
     return
   fi
 
+  echo "  * Repo name: $repo_name" 
+  
   mv "$tmp" "$repo_path"
   
-  repos/add "$repo_name" "$repo_url" "$repo_path"
+  repo-man/add "$repo_name" "$repo_url" "$repo_path"
 }
 
 function repo/remove() {
   local repo_name="$1"
 
   if [ -n "$repo_name" ]; then
-    repos/remove "$repo_name"
+    repo-man/remove "$repo_name"
     local status=$?
 
     if [ $status -ne 0 ]; then
@@ -98,11 +102,11 @@ function repo/update() {
   fi
 
   local -A repo_data
-  repos/get_data repo_data "$repo_name"
+  repo-man/get_data repo_data "$repo_name"
 
   local repo_url="${repo_data[url]}"
   local repo_path="${repo_data[path]}"
-  local update_path=$(repos/download "$repo_url")
+  local update_path=$(repo-man/download "$repo_url")
 
   if [ -z "$update_path" ]; then 
     echo -e "  \e[31m* Failed: $repo_name\e[37m"

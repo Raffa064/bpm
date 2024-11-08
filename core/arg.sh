@@ -85,3 +85,17 @@ function arg/confirm() {
     esac
   done
 }
+
+function arg/set() {
+  local value="$1"
+  shift
+
+  local opt
+  for opt in "$@"; do
+    if [ "$value" == "$opt" ]; then
+      return 0
+    fi
+  done
+
+  return 1
+}

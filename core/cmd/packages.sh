@@ -192,11 +192,11 @@ function cmd/install() {
     fi
   fi
 
-  repos/load_state
+  repo-man/load_state
 
   local pkg_name
   for pkg_name in "${install_packages[@]}"; do
-    local pkg_url="${PACKAGE_ENTRIES[$pkg_name]}" 
+    local pkg_url="${PACKAGE_ENTRIES[repo-$pkg_name]}" 
     if [ -z "$pkg_url" ]; then
       echo -e "  \e[31m* Not found: $pkg_name\e[37m"
     else

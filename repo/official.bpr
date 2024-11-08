@@ -1,8 +1,5 @@
 # This is the official BPM repo
 metadata name=official
- 
 metadata author=Raffa064
-metadata author=Rafael marcos
 
 entry bpm-package=https://github.com/Raffa064/bpm-package
-entry pkg=url

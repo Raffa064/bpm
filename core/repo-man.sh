@@ -10,14 +10,20 @@ function repo-man/load_state() {
     repo-man/get_data repo_data $repo
     bpr-repo PACKAGE_ENTRIES "${repo_data[path]}"
   done
-
-  # Remove loaded metadata
-  unset PACKAGE_ENTRIES[--metadata-name]
-  unset PACKAGE_ENTRIES[--metadata-author]
 }
 
 function repo-man/save_state() {
   sh/write_obj REPOS "repo" "$BPM_REPOS_SH_PATH"
+}
+
+function repo-man/add() {
+  local repo_name="$1"
+  local repo_url="$2"
+  local repo_path="$3"
+
+  REPOS[$repo_name]="$repo_url $repo_path"
+
+  repo-man/save_state
 }
 
 function repo-man/get_data() {
@@ -29,17 +35,6 @@ function repo-man/get_data() {
 
   output["url"]="${data[0]}"
   output["path"]="${data[1]}"
-}
-
-
-function repo-man/add() {
-  local repo_name="$1"
-  local repo_url="$2"
-  local repo_path="$3"
-
-  REPOS[$repo_name]="$repo_url $repo_path"
-
-  repo-man/save_state
 }
 
 function repo-man/remove() {
