@@ -42,10 +42,14 @@ function cmd/leak-test() {
 function cmd/shell() {
   cd $BPM_DIR_PATH
 
+  clear
+  echo -e "\n\e[34mYou're inside BPM's shell.\nThis shell is very usefull for maintenance and debug.\e[37m\n"
+
   local cmd
   while :; do  
-    echo -en "\e[32m[bpm] $ \e[37m"
+    local clampped_pwd="$(pwd)"
+    printf "\e[33m%.20s\e[32m [bpm]: \e[37m" "${clampped_pwd: -20}"
     read cmd
-    $cmd
+    eval "$cmd"
   done
 }
