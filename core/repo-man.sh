@@ -6,9 +6,9 @@ function repo-man/load_state() {
   
   local repo
   for repo in "${!REPOS[@]}"; do
-    local -A repo_data
-    repo-man/get_data repo_data $repo
-    bpr-repo PACKAGE_ENTRIES "${repo_data[path]}"
+    local -A info
+    repo-man/get_info info $repo
+    bpr-repo PACKAGE_ENTRIES "${info[path]}"
   done
 }
 
@@ -26,7 +26,7 @@ function repo-man/add() {
   repo-man/save_state
 }
 
-function repo-man/get_data() {
+function repo-man/get_info() {
   local -n output="$1"
   local repo_name="$2"
 
@@ -41,7 +41,7 @@ function repo-man/remove() {
   local repo_name="$1"
 
   local -A repo_data
-  repo-man/get_data repo_data "$repo_name"
+  repo-man/get_info repo_data "$repo_name"
 
   local repo_path="${repo_data[path]}"
   if [ -e "$repo_path" ]; then

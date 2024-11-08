@@ -30,7 +30,6 @@ function repo/add() {
   bpr-repo data "$tmp"
   local status=$?
 
-
   if [ $status -ne 0 ]; then
     echo -e "  \e[31m* Error while reading repo: $status\e[37m"
     return
@@ -40,15 +39,16 @@ function repo/add() {
   local repo_path="$BPM_REPOS_DIR_PATH/$repo_name.bpr"
 
   if [ -e "$repo_path" ]; then
-    echo -e "\e[33mRepo file already exists!\e[37m"
-    local data="${REPOS[$repo_name]}"
-    read -a data <<< "$data"
-    echo -e "\e[34m  * Url:  ${data[0]}\n  * Path: ${data[1]}\e[37m"
-    echo -e "\e[31m[Aborted]\e[37m"
+    echo -e "\e[33mRepo is already installed!\e[37m"
+    local -A info
+    repo-man/get_info info "$repo_name"
+    echo -e "\e[34m  * Url:  ${info[url]}\n  * Path: ${info[path]}\e[37m"
+    echo -e "\e[31mTo update repo, use 'bpm update'.\e[37m"
     return
   fi
-
-  echo "  * Repo name: $repo_name" 
+  
+  echo "  * Name: $repo_name" 
+  echo "  * Author: $repo_author" 
   
   mv "$tmp" "$repo_path"
   
@@ -73,9 +73,7 @@ function repo/remove() {
 function repo/list() {
   local pkg_name  
   for pkg_name in "${!PACKAGE_ENTRIES[@]}"; do
-    if [ ! "$pkg_name" == "--repo-name" ]; then
-      echo "$pkg_name"
-    fi
+    echo "${pkg_name:5}" # print repo names without prefix
   done
 }
 
