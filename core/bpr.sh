@@ -5,7 +5,7 @@
 BPR_EXTENSION_ERROR=1
 BPR_NOT_FOUND_EXTENSION_ERROR=2
 
-bpr/load() {
+function bpr/load() {
   local -n output="$1"
   local ext="$2"
   local repo_path="$3"

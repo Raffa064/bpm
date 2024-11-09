@@ -29,8 +29,13 @@ function repo-man/add() {
 function repo-man/get_info() {
   local -n output="$1"
   local repo_name="$2"
-
+  
   local data="${REPOS[$repo_name]}"
+
+  if [ -z "$data" ]; then
+    return 1
+  fi
+
   read -a data <<< "$data"
 
   output["url"]="${data[0]}"

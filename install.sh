@@ -152,7 +152,7 @@ function fix_errors_and_configure() {
   exec_bpm fix
 
   echo "Checking for repos..."
-  local repo_list="$(bpm repo list-repos)"
+  local repo_list="$(exec_bpm repo list-repos)"
   if [[ ! "$repo_list" =~ official ]]; then
     echo "* Installing official repo..."
     local official_repo="https://raw.githubusercontent.com/Raffa064/bpm/refs/heads/main/repo/official.bpr"
@@ -205,10 +205,11 @@ $gen_script
 }
 
 function install_bpm() {
-  touch $BPM_INSTALL_LOCK_PATH # Create lock file
-
   download_dependencies
   make_dirs  
+  
+  touch $BPM_INSTALL_LOCK_PATH # Create lock file
+  
   generate_executable
   compile_coresh
   compile_runtime

@@ -3,6 +3,11 @@ function cmd/repo() {
   local command="$1"
   shift
 
+  if [ -z "$command" ]; then
+    cmd/help repo
+    return
+  fi
+
   repo-man/load_state
 
   local command_function="repo/$command"
@@ -10,7 +15,7 @@ function cmd/repo() {
   if declare -f "$command_function" >/dev/null; then
     $command_function $@
   else
-    echo -e "\e[31mInvalid command: $command\e[37m"
+    repo/info "$command"
   fi
 }
 
@@ -69,6 +74,29 @@ function repo/remove() {
   else
     echo -e "\e[33mRepo name must be specified\e[37m"
   fi
+}
+
+function repo/info() {
+  local repo_name="$1"
+
+  local -A repo_info
+  repo-man/get_info repo_info "$repo_name" # Get path and url
+  local status=$?
+
+  if [ $status -ne 0 ]; then
+    echo -e "\e[31mUnknown repo: '$repo_name'\e[37m"
+    return
+  fi
+
+  bpr-repo repo_info "${repo_info[path]}"  # Get metadata (and all packages)
+  local entry_count=${#repo_info[@]}
+  entry_count=$(( entry_count - 4 )) # 4 = url + path + name + author
+
+  echo "  * Name: ${repo_info[--metadata-name]}"
+  echo "  * Author: ${repo_info[--metadata-author]}"
+  echo "  * Entries: $(( entry_count ))"
+  echo "  * Url: ${repo_info[url]}"
+  echo "  * Path: ${repo_info[path]}"
 }
 
 function repo/list() {
