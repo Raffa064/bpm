@@ -26,8 +26,8 @@ function repo/add() {
   fi
 
   echo "Reading metadata..."
-  local -A data
-  bpr-repo data "$tmp"
+  local -A repo_data
+  bpr-repo repo_data "$tmp"
   local status=$?
 
   if [ $status -ne 0 ]; then
@@ -35,7 +35,8 @@ function repo/add() {
     return
   fi
 
-  local repo_name="${data[--metadata-name]}"
+  local repo_name="${repo_data[--metadata-name]}"
+  local repo_author="${repo_data[--metadata-author]}"
   local repo_path="$BPM_REPOS_DIR_PATH/$repo_name.bpr"
 
   if [ -e "$repo_path" ]; then

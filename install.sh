@@ -8,6 +8,16 @@ SUDO=""
 INSTALL_COMMAND="apt install"
 BPM_BASH_INSERTION=( "source $BPM_BASH_INSERTION_PATH" )
 
+function exec_bpm() {
+  local executable_path="$BPM_BIN_DIR_PATH/bpm"
+  if [ -e "$executable_path" ]; then
+    bash "$executable_path" $@
+  else
+    echo -e "\e[31mCan't locate bpm executable\e[37m"
+    exit 1
+  fi
+}
+
 function check_for_install_command() {
   while :; do
     local pkgman
@@ -139,17 +149,17 @@ function generate_autocomplete() {
 
 function fix_errors_and_configure() {
   echo "Fixing possible errors..."
-  bpm fix
+  exec_bpm fix
 
   echo "Checking for repos..."
   local repo_list="$(bpm repo list-repos)"
   if [[ ! "$repo_list" =~ official ]]; then
     echo "* Installing official repo..."
     local official_repo="https://raw.githubusercontent.com/Raffa064/bpm/refs/heads/main/repo/official.bpr"
-    bpm repo add "$official_repo"
+    exec_bpm repo add "$official_repo"
   else
     echo "* Updating repos..."
-    bpm repo update
+    exec_bpm repo update
   fi
 }
 
@@ -230,7 +240,7 @@ function main() {
   fi
 
    if command -v bpm >/dev/null 2>&1; then
-    current_version=$(bpm version)
+    current_version=$(exec_bpm version)
 
     if [ $BPM_VERSION == "$current_version" ]; then
       echo -e "\e[33m[!] BPM is already installed."
