@@ -220,6 +220,7 @@ function install_bpm() {
   fix_errors_and_configure
   
   echo -e "\n\e[32mInstallation successfully finished!\e[37m"
+  echo -e "\e[33mMaybe necessary to restart your bash session to work properly.\e[37m"
 }
 
 function main() {
