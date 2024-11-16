@@ -14,6 +14,11 @@ function run/main() {
   import/init "${pkg[dependencies]}"
   import/add_package "${pkg[name]}" "$pkg_path/src"
 
+  declare -g DIR_NAME="$(pwd)"
+  declare -g RUNNER_PACKAGE="${pkg[name]}"
+  declare -g RUNNER_DIR="$pkg_path"
+  declare -g TMPDIR="$HOME/.local/.bpm/tmp"
+
   # run main script
   local main_script
   import/resolve main_script "${pkg[name]}" "${pkg[main]}"
