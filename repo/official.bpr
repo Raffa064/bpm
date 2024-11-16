@@ -2,4 +2,6 @@
 metadata name=official
 metadata author=Raffa064
 
-entry bpm-package=https://github.com/Raffa064/bpm-package
+entry bpm-package=https://github.com/Raffa064/bpm-package.git
+entry metrics=https://github.com/Raffa064/metrics.git
+entry colorful=https://github.com/Raffa064/colorful.git
