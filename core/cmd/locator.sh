@@ -53,7 +53,6 @@ function cmd/deps() {
   local path="$1"
   arg/df_path path
 
-
   local pkgsh_path=$(pkgsh/locate_pkg_file $path)
 
   if [ -z "$pkgsh_path" ]; then

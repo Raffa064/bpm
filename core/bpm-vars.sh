@@ -4,6 +4,7 @@ BPM_DEPENDENCIES=(
   git 
   curl
   zip
+  realpath
 )
 
 # Directories

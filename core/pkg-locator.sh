@@ -22,13 +22,12 @@ function locator/add() {
   fi
   
   local pkg_name="$1"
-  local pkg_path="$2"
+  local pkg_path="$(realpath $2)" # resolve relative paths
   LOCATOR["$pkg_name"]="$pkg_path"
   
   if [ $save_flag -eq 0 ]; then
     locator/save_state
   fi
-
 }
 
 function locator/remove() {

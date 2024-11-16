@@ -6,6 +6,10 @@ function cmd/init() {
   local pkgsh_path=$(pkgsh/locate_pkg_file $path)
 
   if [ -z "$pkgsh_path" ]; then
+    if [ ! -e "$path" ]; then
+      mkdir -p "$path"
+    fi
+
     local pkg_name pkg_version pkg_main pkg_deps
 
     echo -e "\e[33mInitializing a new package\e[37m"
