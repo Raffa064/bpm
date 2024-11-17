@@ -10,6 +10,9 @@ function repo-man/load_state() {
     repo-man/get_info info $repo
     bpr-repo PACKAGE_ENTRIES "${info[path]}"
   done
+
+  unset PACKAGE_ENTRIES[--metadata-name]
+  unset PACKAGE_ENTRIES[--metadata-author]
 }
 
 function repo-man/save_state() {
