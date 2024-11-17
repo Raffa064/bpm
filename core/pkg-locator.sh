@@ -117,18 +117,18 @@ function locator/print_index() {
 
 function locator/dependencies() {
   local pkg_name="$1"
-  local seen="$2"
-  
+  local output="$2" # seen
+
   local pkg_path="${LOCATOR["$pkg_name"]}"
 
   local pkg_deps
   pkgsh/loadf pkg_deps "dependencies" "$pkg_path/package.sh"
   read -a pkg_deps <<< "$pkg_deps"
 
-  local output=""
   for dep in "${pkg_deps[@]}"; do
-    if [[ ! "$seen" =~ "$dep" ]]; then
-      output+="$dep $(locator/dependencies "$dep" "$output")"
+    if [[ ! "$output" =~ $dep ]]; then
+      output+="$dep "
+      output+="$(locator/dependencies "$dep" "$output")"
     fi
   done
 

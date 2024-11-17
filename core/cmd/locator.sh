@@ -56,7 +56,7 @@ function cmd/deps() {
   local pkgsh_path=$(pkgsh/locate_pkg_file $path)
 
   if [ -z "$pkgsh_path" ]; then
-    echo -e "\e[31mCan't ocate package file: $path\e[37m"
+    echo -e "\e[31mCan't locate package file: $path\e[37m"
   else
     local pkg_name
     pkgsh/loadf pkg_name "name" "$pkgsh_path"

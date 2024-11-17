@@ -176,6 +176,7 @@ function cmd/list() {
   cmd/locator -p
 }
 
+install_skip_packages=""
 function cmd/install() {
   local install_packages="$@"
   local path=$(pwd)
@@ -200,6 +201,12 @@ function cmd/install() {
 
   local pkg_name
   for pkg_name in "${install_packages[@]}"; do
+    if [[ "$install_skip_packages" =~ $pkg_name ]]; then
+      continue
+    fi
+
+    install_skip_packages+=" $pkg_name"
+    
     local pkg_url="${PACKAGE_ENTRIES[repo-$pkg_name]}" 
     if [ -z "$pkg_url" ]; then
       echo -e "  \e[31m* Not found: $pkg_name\e[37m"
@@ -228,6 +235,9 @@ function cmd/install() {
           echo -e "  \e[31m- Error while updating package\e[37m"
         fi
       fi
+
+      # Install package deps
+      cmd/install $(cmd/deps $pkg_path)
     fi
   done
 }

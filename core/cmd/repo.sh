@@ -113,7 +113,7 @@ function repo/list-repos() {
 }
 
 function repo/update() {
-  if [ "$1" == "-s" ]; then
+  if [ "$1" == "-s" ]; then # silent
     shift
   else
     echo "Updating repositories..."

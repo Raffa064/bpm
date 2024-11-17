@@ -1,3 +1,5 @@
+DBG_CLEAR_CONSOLE="dbg-clear-console"
+
 function cmd/leak-test() {
   # bpm leak-test query -> print value of a global var
   # bpm leak-test query command [-f (arg, ...)]-> print value of a global var after running command
@@ -51,5 +53,35 @@ function cmd/shell() {
     printf "\e[33m%.20s\e[32m [bpm]: \e[37m" "${clampped_pwd: -20}"
     read cmd
     eval "$cmd"
+  done
+}
+
+function dbg/log() {
+  dbg/make_output_file
+  echo "$@" > "$BPM_LOGS_PATH"
+}
+
+function dbg/clear() {
+  dbg/log $DBG_CLEAR_CONSOLE
+}
+
+function dbg/make_output_file() {
+  if [ ! -p "$BPM_LOGS_PATH" ]; then
+    mkfifo $BPM_LOGS_PATH
+  fi
+}
+
+function cmd/output-logs() {
+  dbg/make_output_file
+
+  while true; do
+    local line
+    if read line <"$BPM_LOGS_PATH"; then
+      if [ "$line" == "$DBG_CLEAR_CONSOLE" ]; then
+        clear
+      else
+        echo -e "$line"
+      fi
+    fi
   done
 }

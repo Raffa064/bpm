@@ -2,6 +2,8 @@
 
 source_core_scripts
 
+dbg/clear # Clear output
+
 if [ -e "$BPM_INSTALL_LOCK_PATH" ]; then
   echo "BPM installer is running..."
   echo "Lock file at: $BPM_INSTALL_LOCK_PATH"
