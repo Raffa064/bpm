@@ -56,6 +56,12 @@ function cmd/shell() {
   done
 }
 
+function dbg/make_output_file() {
+  if [ ! -p "$BPM_LOGS_PATH" ]; then
+    mkfifo $BPM_LOGS_PATH
+  fi
+}
+
 function dbg/log() {
   dbg/make_output_file
   echo "$@" > "$BPM_LOGS_PATH"
@@ -63,12 +69,6 @@ function dbg/log() {
 
 function dbg/clear() {
   dbg/log $DBG_CLEAR_CONSOLE
-}
-
-function dbg/make_output_file() {
-  if [ ! -p "$BPM_LOGS_PATH" ]; then
-    mkfifo $BPM_LOGS_PATH
-  fi
 }
 
 function cmd/output-logs() {
