@@ -106,7 +106,7 @@ function repo/info() {
 function repo/list() {
   local pkg_name  
   for pkg_name in "${!PACKAGE_ENTRIES[@]}"; do
-    echo "${pkg_name:5}" # print repo names without prefix
+    echo "${pkg_name:6}" # print repo names without prefix
   done
 }
 

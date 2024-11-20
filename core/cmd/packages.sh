@@ -213,7 +213,7 @@ function cmd/install() {
 
     install_skip_packages+=" $pkg_name"
     
-    local pkg_url="${PACKAGE_ENTRIES[repo-$pkg_name]}" 
+    local pkg_url="${PACKAGE_ENTRIES[entry-$pkg_name]}" 
     if [ -z "$pkg_url" ]; then
       echo -e "  \e[31m* Not found: $pkg_name\e[37m"
     else

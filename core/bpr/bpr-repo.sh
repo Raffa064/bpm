@@ -11,6 +11,6 @@ function bpr-repo/metadata() {
 }
 
 function bpr-repo/entry() {
-  output["repo-$1"]="$2"
+  output["entry-$1"]="$2"
 }
 
