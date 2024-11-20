@@ -73,7 +73,14 @@ function cmd/fix() {
     fi
   done
 
-  # TODO: remove deleted packages's exporrt script
+  echo "Removing unknown exports..."
+  local exported_pkg
+  for exported_pkg in $(ls "$BPM_EXPORT_DIR_PATH"); do
+    if ! locator/is_indexed $exported_pkg; then
+      echo "  * $exported_pkg"
+      cmd/unexport $exported_pkg 
+    fi
+  done
 }
 
 cmp_uninstall="-d"
