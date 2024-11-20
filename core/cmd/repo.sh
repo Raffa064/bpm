@@ -14,8 +14,10 @@ function cmd/repo() {
   
   if declare -f "$command_function" >/dev/null; then
     $command_function $@
+    return $?
   else
     repo/info "$command"
+    return $?
   fi
 }
 
@@ -27,7 +29,7 @@ function repo/add() {
 
   if [ -z "$tmp" ]; then
     echo -e "\e[31mCan't locate repo file from url: $repo_url"
-    return 
+    return 1
   fi
 
   echo "Reading metadata..."
@@ -37,7 +39,7 @@ function repo/add() {
 
   if [ $status -ne 0 ]; then
     echo -e "  \e[31m* Error while reading repo: $status\e[37m"
-    return
+    return 1
   fi
 
   local repo_name="${repo_data[--metadata-name]}"
@@ -50,7 +52,7 @@ function repo/add() {
     repo-man/get_info info "$repo_name"
     echo -e "\e[34m  * Url:  ${info[url]}\n  * Path: ${info[path]}\e[37m"
     echo -e "\e[31mTo update repo, use 'bpm update'.\e[37m"
-    return
+    return 1
   fi
   
   echo "  * Name: $repo_name" 
@@ -70,9 +72,11 @@ function repo/remove() {
 
     if [ $status -ne 0 ]; then
       echo -e "\e[31mRepo not found\e[37m"
+      return 1
     fi
   else
     echo -e "\e[33mRepo name must be specified\e[37m"
+    return 1
   fi
 }
 
@@ -85,7 +89,7 @@ function repo/info() {
 
   if [ $status -ne 0 ]; then
     echo -e "\e[31mUnknown repo: '$repo_name'\e[37m"
-    return
+    return 1
   fi
 
   bpr-repo repo_info "${repo_info[path]}"  # Get metadata (and all packages)
@@ -137,7 +141,7 @@ function repo/update() {
 
   if [ -z "$update_path" ]; then 
     echo -e "  \e[31m* Failed: $repo_name\e[37m"
-    return
+    return 1
   fi
 
   rm "$repo_path"

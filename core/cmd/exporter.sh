@@ -9,6 +9,7 @@ function cmd/export() {
     echo -e "\e[32mSucessfully exported\e[37m"
   else
     echo -e "\e[31mCan't locate package: $pkg_name\e[37m"
+    return 1
   fi
 }
 
@@ -18,12 +19,13 @@ function cmd/unexport() {
   local script_path="$BPM_EXPORT_DIR_PATH/$pkg_name"
   if [ -e "$script_path" ]; then
     rm "$script_path"
-    echo "\e[32mSucessfully removed from exports\e[37m"
+    echo -e "\e[32mSucessfully removed from exports\e[37m"
   else
     echo -e "\e[31mRequested package haven't been exported\e[37m"
+    return 1
   fi
 }
 
 function cmd/list-exported() {
-  ls "$BPM_EXPORT_DIR_PATH"
+  echo $(ls "$BPM_EXPORT_DIR_PATH")
 }

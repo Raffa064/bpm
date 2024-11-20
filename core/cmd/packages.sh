@@ -66,6 +66,7 @@ function cmd/init() {
     done
   else
     echo -e "\e[33mAlready initialized: $pkgsh_path\e[37m"
+    return 1
   fi
 }
 
@@ -80,10 +81,12 @@ function cmd/package() {
   
   if [ -z "$pkgsh_path" ]; then
     echo -e "\e[33mYou aren't inside a bpm package\e[37m"
+    return 1
   else
     if [ -z "$EDITOR" ]; then
       echo -e "\e[33mYou don't have a configured editor.\e[37m"
       echo -e "use \e[34m'export EDITOR=\"<your editor>\"'\e[37m to setup it"
+      return 1
     else
       $EDITOR $pkgsh_path
     fi
@@ -104,7 +107,7 @@ function cmd/remove() {
 
     if [ -n "$pkg_path" ]; then
       if [ "$BPM_DEPS_DIR_PATH" != "$(dirname "$pkg_path")" ]; then
-        echo -e "\e[34m[?] $pkg_name is a local package, move anyway?\e[37m"
+        echo -e "\e[34m[?] $pkg_name is a local package, remove anyway?\e[37m"
         local confirm
         arg/confirm confirm 1
 
@@ -128,7 +131,7 @@ function cmd/remove() {
   zip -r "../trash.zip" "." >/dev/null 2>&1
   rm -rf "$trash_dir"
 
-  echo -e "\e[34mRun 'bpm clean' to delete packages\e[37m"
+  echo -e "\e[34mRun 'bpm clean' to empty trash\e[37m"
 }
 
 function cmd/restore() {
@@ -155,9 +158,11 @@ function cmd/restore() {
       cmd/locator -i $pkg_path
     else
       echo -e "\e[31mNot found: $pkg_name\e[37m"
+      return 1
     fi
   else
     echo -e "\e[33mTrash is empty\e[37m"
+    return 1
   fi
 }
 
@@ -169,6 +174,7 @@ function cmd/clean() {
     rm "$trash_path"
   else
     echo "Nothing to clear"
+    return 1
   fi
 }
 
@@ -256,7 +262,9 @@ function cmd/run() {
 
   if [ -e "$pkg_path" ]; then
     bash $BPM_RUNNER_PATH $pkg_path ${args[@]}
+    return $?
   else
     echo -e "\e[31mCan't locate package file: $path\e[37m"
+    return 1
   fi
 }

@@ -5,6 +5,7 @@ function cmd/help() {
     help_content="${help_sections[$1]}"
     if [ -z "$help_content" ]; then
       echo -e "\e[31mInvalid help section: $1\e[37m"
+      return 1
     else
       title=$(sed -n "1p" <<< "$help_content")
       command=$(sed -n "3p" <<< "$help_content")
@@ -71,6 +72,8 @@ function cmd/fix() {
       echo "Failed to fix deps/$dep_package"
     fi
   done
+
+  # TODO: remove deleted packages's exporrt script
 }
 
 cmp_uninstall="-d"

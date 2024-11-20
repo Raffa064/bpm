@@ -41,7 +41,7 @@ function cmd/locator() {
       ;;
     locate|-l)
       locator/locate_package $mode_arg
-      ;;
+      ;; 
     *)
       cmd/help locator
       echo -e "\e[31mInvalid mode: $mode\e[37m"
@@ -57,6 +57,7 @@ function cmd/deps() {
 
   if [ -z "$pkgsh_path" ]; then
     echo -e "\e[31mCan't locate package file: $path\e[37m"
+    return 1
   else
     local pkg_name
     pkgsh/loadf pkg_name "name" "$pkgsh_path"
