@@ -18,5 +18,7 @@ Commands:
 >list<      - List installed packages
 >install<   - Install project dependencies
 >run<       - Run executable packages
+>export<    - Export packages as CLI
+>unexport<  - Remove package cli
 
 >NOTE:< You can use "bpm help <command>" to learn more about bpm commands.

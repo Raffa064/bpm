@@ -1,0 +1,7 @@
+Exporting package's CLI
+
+bpm export <pkg-name>
+
+This command is used to export a CLI for any package, to be used without needing to write 'bpm run'.
+
+NOTE: If you delte some package that have a exported CLI, you will need to use 'bpm unexport' or 'bpm fix' to remove it's generated script file.

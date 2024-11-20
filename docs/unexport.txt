@@ -1,0 +1,5 @@
+Remove exported packages
+
+bpm unexport <pkg-name>
+
+Used to unexport package's CLIs.
