@@ -29,4 +29,4 @@ if [ ! -z "$BPM_TMP_DIR_PATH" ]; then  # Preventing to delete the entire root pa
   rm -rf "$BPM_TMP_DIR_PATH"/* 
 fi
 
-return $exit_status
+exit $exit_status
