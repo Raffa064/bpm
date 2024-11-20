@@ -1,7 +1,6 @@
-# This is the official BPM repo
 metadata name=official
 metadata author=Raffa064
-
+entry colorful=https://github.com/Raffa064/colorful.git
+entry edit-repo=https://github.com/Raffa064/edit-repo.git
 entry bpm-package=https://github.com/Raffa064/bpm-package.git
 entry metrics=https://github.com/Raffa064/metrics.git
-entry colorful=https://github.com/Raffa064/colorful.git
