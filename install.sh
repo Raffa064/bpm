@@ -8,6 +8,10 @@ SUDO=""
 INSTALL_COMMAND="apt install"
 BPM_BASH_INSERTION=( "source $BPM_BASH_INSERTION_PATH" )
 
+function bash/insert() {
+  BPM_BASH_INSERTION+=( "$1" )
+}
+
 function exec_bpm() {
   local executable_path="$BPM_BIN_DIR_PATH/bpm"
   if [ -e "$executable_path" ]; then
@@ -67,7 +71,7 @@ function generate_executable() {
   chmod 700 bpm        # Only current user can access it
   mv bpm $BPM_BIN_DIR_PATH # Move to ~/local/bin
 
-  BPM_BASH_INSERTION+=( "export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\"" )
+  bash/insert "export PATH=\"\$PATH:$BPM_BIN_DIR_PATH\""
 } 
 
 function compile_docs() {
@@ -123,20 +127,31 @@ function compile_coresh() {
   rm -rf tmp
 }
 
-function compile_runtime() {
-  echo "Generating runtime script..."
-  cp -r ./runtime tmp
+function compile_module() {
+  local module_name="$1"
+  local module_path="$2"
+
+  echo "Generating $module_name module..."
+  cp -r "./$module_name" tmp
 
   echo "  * Copying dependencies..."
-  for dep in $(cat ./runtime/deps.txt); do 
+  for dep in $(cat "./$module_name/deps.txt"); do 
     cp "$dep" "tmp/$(basename $dep)"
   done
 
-  echo "  * Compiling runtime..."
-  compile_scripts tmp $BPM_RUNNER_PATH
-  echo "run/main \$@" >> $BPM_RUNNER_PATH
+  echo "  * Compiling $module..."
+  compile_scripts tmp $module_path
 
   rm -rf tmp
+}
+
+function compile_runtime() {
+  compile_module runtime $BPM_RUNNER_PATH
+  echo "run/main \$@" >> $BPM_RUNNER_PATH
+}
+
+function setup_exporter() {
+  bash/insert "export PATH=\"\$PATH:$BPM_EXPORT_DIR_PATH\""
 }
 
 function generate_autocomplete() {
@@ -144,7 +159,7 @@ function generate_autocomplete() {
  
   bash ./gen-cmp.sh # Generate autocomplete script
 
-  BPM_BASH_INSERTION+=( "source $BPM_AUTOCOMPLETE_PATH" )
+  bash/insert "source $BPM_AUTOCOMPLETE_PATH"
 } 
 
 function fix_errors_and_configure() {
@@ -213,6 +228,7 @@ function install_bpm() {
   generate_executable
   compile_coresh
   compile_runtime
+  setup_exporter
   generate_autocomplete
   generate_bash_insertion
  
