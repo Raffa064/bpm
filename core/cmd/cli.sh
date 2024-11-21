@@ -85,17 +85,28 @@ function cmd/fix() {
 
 cmp_uninstall="-d"
 function cmd/uninstall() {
-  echo -e "\e[33mUninstalling executable scripts....\e[37m"
-  rm "$BPM_BIN_DIR_PATH/bpm"
-  rm "$BPM_CORE_PATH"
-
-  bash $BPM_BASH_INSERTION_PATH remove
-
   if [ "$1" == "-d" ]; then
-    echo -e "\e[33mFully deleting all state and installed packages\e[37m"
-    rm -rf "$BPM_DIR_PATH"
+    echo "Do you really want to fully unintall bpm?"
+    echo -e "\e[33mIt will delete all installed packages and configurations.\e[37m"
+    local confirm
+    arg/confirm confirm
+
+    if [ $confirm -eq 0 ]; then
+      echo "Removing bash insertions..."
+      bash $BPM_BASH_INSERTION_PATH remove
+      echo -e "\e[33mFully deleting all state and installed packages...\e[37m"
+      rm -rf "$BPM_DIR_PATH"
+    else
+      echo -e "\e[33mUnstallation aborted\e[37m"
+    fi
   else
-    echo -e "\e[32mState and installed packages will not be deleted."
+    echo -e "\e[32mCurrent bpm state and installed packages will not be deleted."
+    echo "Removing bash insertions..."
+    bash $BPM_BASH_INSERTION_PATH remove
+  
+    echo -e "\e[33mUninstalling executable scripts....\e[37m"
+    rm "$BPM_BIN_DIR_PATH/bpm"
+    rm -rf "$BPM_SRC_DIR_PATH"
   fi
 }
 
