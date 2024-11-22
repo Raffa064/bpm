@@ -70,27 +70,27 @@ function cmd/init() {
   fi
 }
 
-function cmd/package() { 
-  local path="$1"
-
-  if [ -z "$path" ]; then
-    path=$(pwd)
-  fi
-
-  local pkgsh_path=$(pkgsh/locate_pkg_file $path)
+function cmd/edit() {
+  local file_name="$1"
+  local root_path="$(pkgsh/locate_pkg_root $(pwd))"
   
-  if [ -z "$pkgsh_path" ]; then
+  if [ -z "$root_path" ]; then
     echo -e "\e[33mYou aren't inside a bpm package\e[37m"
     return 1
-  else
-    if [ -z "$EDITOR" ]; then
-      echo -e "\e[33mYou don't have a configured editor.\e[37m"
-      echo -e "use \e[34m'export EDITOR=\"<your editor>\"'\e[37m to setup it"
-      return 1
-    else
-      $EDITOR $pkgsh_path
-    fi
   fi
+
+  local file_path="$(find "$root_path" -type d -name ".git" -prune -o -type f -name "*$file_name*" -print)"
+
+  if [ -z "$file_path" ]; then
+    echo "Can't locate file: '$file_name'"
+    return 1
+  fi
+
+  editor/open "$file_path"
+}
+
+function cmd/package() { 
+  cmd/edit package.sh
 }
 
 function cmd/remove() {

@@ -2,6 +2,6 @@ Package shortcut
 
 bpm package
 
-It simply opens your >package.sh< file with your >default text editor<, regardless of your current location within the package directories.
+It simply opens your >package.sh< file with your >default text editor<, regardless of your current location within the package directories. If not, it will try to open with some default editors, like vim or nano.
 
 >NOTE:< The default text editor must be defined into your environment variables as >$EDITOR<
