@@ -132,7 +132,7 @@ function insert() {
       fi
       ;;
     remove)
-      sed -i \"#^\$insertion\\\$#d\" \"\$HOME/.bashrc\"
+      sed -i \"\\#^\$insertion\\\$#d\" \"\$HOME/.bashrc\"
       ;;
   esac
 }
