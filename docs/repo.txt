@@ -6,6 +6,8 @@ Commands:
 >add &lt;url&gt;<                - Install a repo from a given url.
                            A repository is a >bpr< file, you can read more about using: >bpm help bpr<
 >remove &lt;repo_name&gt;<       - Remove some repo.
+>info &lt;repo_name&gt;<         - Show information about some repo. 
+                           >NOTE:< As a shortcut, you can ommit the 'info' subcommand
 >list<                     - List all packages from installed repos.
 >list-repos<               - List all installed repos.
 >update [repo_name]<       - It will re-install the repo from the same url it has been installed.
