@@ -67,9 +67,15 @@ function repo-man/download() {
 
   local tmp="$BPM_TMP_DIR_PATH/repo-$RANDOM.bpr"
 
-  curl -o "$tmp" "$repo_url" >/dev/null 2>&1
-  local status=$?
-
+  local status
+  if [[ "$repo_url" =~ raw\.githubusercontent\.com ]]; then
+    curl -o "$tmp" -sH 'Accept-encoding: deflate' "$repo_url?random=$RANDOM" >/dev/null 2>&1
+    status=$?
+  else
+    curl -o "$tmp" "$repo_url" >/dev/null 2>&1
+    status=$?
+  fi
+  
   if [ $status -ne 0 ]; then
     return 1
   fi
