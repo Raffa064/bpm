@@ -69,4 +69,4 @@ function cmd/deps() {
       echo "$dep"
     done
   fi
-}
+ }

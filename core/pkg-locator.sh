@@ -115,9 +115,14 @@ function locator/print_index() {
   done
 }
 
+# Outputs a list of package dependencies, including itself
 function locator/dependencies() {
   local pkg_name="$1"
-  local output="$2" # seen
+  local seen="$2"
+
+  if [ -z "$seen" ]; then
+    seen="$pkg_name "
+  fi
 
   local pkg_path="${LOCATOR["$pkg_name"]}"
 
@@ -126,11 +131,11 @@ function locator/dependencies() {
   read -a pkg_deps <<< "$pkg_deps"
 
   for dep in "${pkg_deps[@]}"; do
-    if [[ ! "$output" =~ $dep ]]; then
-      output+="$dep "
-      output+="$(locator/dependencies "$dep" "$output")"
+    if [[ ! "$seen" =~ $dep ]]; then
+      seen+="$dep "
+      seen="$(locator/dependencies "$dep" "$seen")"
     fi
   done
 
-  echo $output
+  echo "$seen"
 }
