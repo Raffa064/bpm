@@ -19,22 +19,13 @@ function run/main() {
   declare -g RUNNER_DIR="$pkg_path"
   declare -g TMPDIR="$HOME/.local/.bpm/tmp"
 
-  # run main script
-  local main_script
-  import/resolve main_script "${pkg[name]}" "${pkg[main]}"
-  
-  if [ -e "$main_script" ]; then
-    source $main_script
+  import "${pkg[main]}" # import main script
 
-    main_function="${pkg[name]}/main"
-    if declare -f "$main_function" >/dev/null; then
-      $main_function $@
-    else
-      echo -e "\e[31mPackage main function is not found: $main_function\e[37m"
-      return
-    fi
+  main_function="${pkg[name]}/main"
+  if declare -f "$main_function" >/dev/null; then
+    $main_function $@
   else
-    echo -e "\e[31mCan't run package main script\e[37m"
-    return
+    echo -e "\e[31mPackage main function is not found: $main_function\e[37m"
+    return 1
   fi
 }

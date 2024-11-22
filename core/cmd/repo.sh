@@ -25,7 +25,7 @@ function repo/add() {
   local repo_url="$1"
 
   echo "Downloanding repo file..."
-  local tmp=$(repo-man/download $repo_url $workaround)
+  local tmp=$(repo-man/download $repo_url)
 
   if [ -z "$tmp" ]; then
     echo -e "\e[31mCan't locate repo file from url: $repo_url"

@@ -1,8 +1,8 @@
 NOT_FOUND=1
 INVALID_PACKAGE=2
 
-declare -A IMPORT_SHEET     # [com_package_file]="pkg-name path/to/that/file"
-declare -A IMPORTED_SCRIPTS # [com_package_file]="imported"
+declare -gA IMPORT_SHEET     # [com_package_file]="pkg-name path/to/that/file"
+declare -gA IMPORTED_SCRIPTS # [com_package_file]="1"
 
 function import/add_package() {
   local pkg_name="$1"
@@ -98,8 +98,9 @@ function import() {
   fi
 
   import/format_path import_path
+
   if [ -z "${IMPORTED_SCRIPTS[$import_path]}" ]; then
-    source $script_path
     IMPORTED_SCRIPTS[$import_path]=1
+    source $script_path
   fi
 }
