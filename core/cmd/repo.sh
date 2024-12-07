@@ -24,12 +24,28 @@ function cmd/repo() {
 function repo/add() {
   local repo_url="$1"
 
-  echo "Downloanding repo file..."
-  local tmp=$(repo-man/download $repo_url)
+  if [ -f "$repo_url" ]; then
+    echo "Importing local repo file..."
+    tmp="$BPM_TMP_DIR_PATH/repo-$RANDOM.bpr"
+    cp "$repo_url" "$tmp"
 
-  if [ -z "$tmp" ]; then
-    echo -e "\e[31mCan't locate repo file from url: $repo_url"
-    return 1
+    echo -e "\e[32mDo you want to provide an remote url for this repo?\e[37m"
+    arg/confirm provide_url
+
+    if [ $provide_url -eq 0 ]; then
+      echo -n "Enter url: "
+      read repo_url
+    else
+      repo_url=$(realpath $repo_url) # set to offline
+    fi
+  else
+    echo "Downloanding repo file..."
+    local tmp=$(repo-man/download $repo_url)
+
+    if [ -z "$tmp" ]; then
+      echo -e "\e[31mCan't locate repo file from url: $repo_url"
+      return 1
+    fi
   fi
 
   echo "Reading metadata..."
@@ -104,16 +120,20 @@ function repo/info() {
 }
 
 function repo/list() {
-  local pkg_name  
-  for pkg_name in "${!PACKAGE_ENTRIES[@]}"; do
-    echo "${pkg_name:6}" # print repo names without prefix
-  done
+  sort <<< $(
+    local pkg_name  
+    for pkg_name in "${!PACKAGE_ENTRIES[@]}"; do
+      echo "${pkg_name:6}" # print repo names without prefix
+    done
+  )
 }
 
 function repo/list-repos() {
-  for pkg_name in "${!REPOS[@]}"; do
-    echo "$pkg_name"
-  done
+  sort <<< $(
+    for pkg_name in "${!REPOS[@]}"; do
+      echo "$pkg_name"
+    done
+  )
 }
 
 function repo/update() {
@@ -138,7 +158,17 @@ function repo/update() {
   local repo_url="${repo_info[url]}"
   local repo_path="${repo_info[path]}"
 
-  local update_path=$(repo-man/download "$repo_url")
+  local update_path 
+  if [[ "$repo_url" =~ ^(http|https):// ]]; then
+    update_path=$(repo-man/download "$repo_url")
+  else # Is a local repo
+    if [ -f "$repo_url" ]; then
+      update_path="$BPM_TMP_DIR_PATH/repo-$RANDOM.bpr"
+      cp "$repo_url" "$update_path"
+    else
+      echo -e "\e[31mCan't locate repo file: '$repo_url'\e[37m"
+    fi
+  fi
 
   if [ -z "$update_path" ]; then 
     echo -e "  \e[31m* Failed: $repo_name\e[37m"
