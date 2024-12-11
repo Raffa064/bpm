@@ -2,8 +2,6 @@ declare -gA LOCATOR
 
 function locator/init() {
   locator/load_state
-  locator/update
-  locator/index_package $(pwd)
 }
 
 function locator/save_state() {

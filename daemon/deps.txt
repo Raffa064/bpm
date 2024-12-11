@@ -1,0 +1,4 @@
+core/bpm-vars.sh
+core/sh-obj.sh
+core/pkgsh.sh
+core/pkg-locator.sh

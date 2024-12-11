@@ -76,6 +76,13 @@ function compile_runtime() {
   echo "run/main \$@" >> $BPM_RUNNER_PATH
 }
 
+function compile_daemon() {
+  compile_module daemon $BPM_DAEMON_PATH
+  echo "bpmd/main \$@" >> $BPM_DAEMON_PATH
+  chmod 700 "$BPM_DAEMON_PATH"
+  bash/insert "bash $BPM_DAEMON_PATH start &"
+}
+
 function setup_exporter() {
   bash/insert "export PATH=\"\$PATH:$BPM_EXPORT_DIR_PATH\""
 }
@@ -154,6 +161,7 @@ function install_bpm() {
   generate_executable
   compile_coresh
   compile_runtime
+  compile_daemon
   setup_exporter
   generate_autocomplete
   generate_bash_insertion
