@@ -2,6 +2,25 @@
 
 BPM is a command-line package manager that allows you to install and manage Bash scripts easily, similar to how you would manage packages in Node.js or Java projects.
 
+# How to install
+
+In order to install bpm on your device, you'll need to clne this repository.
+
+```bash
+git clone https://github.com/Raffa064/bpm --depth 1
+```
+
+After done, open the bpm's directory, and run the `install.sh` script:
+```bash
+cd bpm 
+./install.sh
+```
+
+And, it's done! You can use `bpm help` to learn more about bpm.
+
+> [!NOTE]
+> The installation script can't be runned as ´sudo´, but it will ask for permission to install dependencies, such as `git`, `curl`, and `zip`.
+
 ## Project Structure
 
 Every project created with BPM must adhere to the following structure, which is inspired by Node.js and Java workflows:
